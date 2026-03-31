@@ -1,16 +1,11 @@
 ---
-// Pixel Cat component - follows mouse, wobbles on hover
+// Cute Pixel Cat - with walking, sleeping, and butterfly chasing
 ---
 
-<div id="pixel-cat" class="fixed pointer-events-none z-40 transition-transform duration-100" style="left: 50%; top: 50%;">
-  <canvas id="cat-canvas" width="32" height="32" class="image-render-pixelated"></canvas>
-</div>
+<div id="pixel-cat" class="fixed pointer-events-none z-40" style="left: 50%; top: 50%;"></div>
+<canvas id="cat-canvas" width="64" height="64" class="fixed pointer-events-none z-40 image-render-pixelated" style="display: none;"></canvas>
 
 <style>
-  #pixel-cat {
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-  }
   #cat-canvas {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
@@ -22,186 +17,317 @@
   const canvas = document.getElementById('cat-canvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
   
-  // Pixel cat design (16x16 scaled to 32x32)
-  // Colors
-  const COLORS = {
-    fur: '#f5a623',      // Orange tabby
-    furDark: '#d4871b',  // Darker stripes
-    furLight: '#ffd699', // Light fur
-    eye: '#2d2d2d',      // Dark eyes
-    eyeShine: '#ffffff', // Eye shine
-    nose: '#ff9999',     // Pink nose
-    ear: '#ffb3b3',      // Pink ears
+  // Colors - cute orange tabby
+  const C = {
+    orange: '#ffb347',
+    orangeDark: '#ff8c00', 
+    orangeLight: '#ffd699',
+    white: '#fff5e6',
+    pink: '#ffb6c1',
+    pinkDark: '#ff69b4',
+    black: '#2d2d2d',
+    whiteEye: '#ffffff',
+    nose: '#ff9999',
   };
 
-  // Cat position & state
-  let catX = window.innerWidth / 2;
-  let catY = window.innerHeight / 2;
-  let targetX = catX;
-  let targetY = catY;
-  let wobble = 0;
-  let wobbleSpeed = 0;
-  let eyeOffsetX = 0;
-  let eyeOffsetY = 0;
-  let isHovering = false;
-  let isJumping = false;
-  let jumpY = 0;
+  // State
+  let state: 'idle' | 'walk' | 'sleep' | 'yawn' | 'play' = 'idle';
+  let x = window.innerWidth / 2;
+  let y = window.innerHeight / 2;
+  let targetX = x;
+  let targetY = y;
+  let mouseX = x;
+  let mouseY = y;
+  let frame = 0;
+  let animFrame = 0;
+  let facingRight = true;
+  
+  // Sleep state
+  let sleepTimer = 0;
+  let isSleepy = false;
+  let sleepiness = 0;
+  
+  // Butterfly
+  let butterfly: { x: number; y: number; angle: number } | null = null;
 
-  // Mouse position
-  let mouseX = catX;
-  let mouseY = catY;
-
-  // Draw pixel
-  function drawPixel(x: number, y: number, color: string, scale = 2) {
+  function drawPixel(px: number, py: number, color: string) {
     ctx.fillStyle = color;
-    ctx.fillRect(x * scale, y * scale, scale, scale);
+    ctx.fillRect(px * 4, py * 4, 4, 4);
   }
 
-  // Draw the cat
   function drawCat() {
-    ctx.clearRect(0, 0, 32, 32);
+    ctx.clearRect(0, 0, 64, 64);
     
-    const wobbleOffset = Math.sin(wobble) * (isHovering ? 1.5 : 0.5);
-    const jumpOffset = isJumping ? Math.sin(jumpY) * -3 : 0;
+    const bounce = Math.sin(frame * 0.1) * (state === 'walk' ? 2 : 0.5);
+    const breathe = Math.sin(frame * 0.05) * 0.5;
+    const tailWag = Math.sin(frame * 0.15) * 2;
     
-    // Body (sitting cat, 12x12 pixels)
-    const baseX = 2;
-    const baseY = 8 + Math.floor(wobbleOffset) + Math.floor(jumpOffset);
+    // Walking animation offset
+    const walkOffset = state === 'walk' ? Math.sin(frame * 0.3) * 2 : 0;
     
-    // Body base
+    // Sleep squint
+    const eyeOpen = state === 'sleep' ? 0 : (state === 'yawn' ? 0.3 : 1);
+    const eyeHeight = Math.floor(2 * eyeOpen);
+    
+    // Base position
+    const bx = 8;
+    const by = 20 - bounce + breathe;
+    
+    // === BODY ===
+    // Main body (chubby)
     for (let i = 0; i < 10; i++) {
-      drawPixel(baseX + i, baseY + 6, COLORS.fur);
-      drawPixel(baseX + i, baseY + 7, COLORS.furDark);
-    }
-    
-    // Body middle
-    for (let i = 1; i < 9; i++) {
-      drawPixel(baseX + i, baseY + 5, COLORS.fur);
-      drawPixel(baseX + i, baseY + 4, i === 2 || i === 6 ? COLORS.furDark : COLORS.fur);
-    }
-    
-    // Stripes
-    drawPixel(baseX + 2, baseY + 5, COLORS.furDark);
-    drawPixel(baseX + 6, baseY + 5, COLORS.furDark);
-    
-    // Head
-    const headY = baseY - 2 + Math.floor(wobbleOffset * 0.5);
-    for (let i = 1; i < 8; i++) {
-      drawPixel(baseX + i + 1, headY + 2, COLORS.fur);
-      drawPixel(baseX + i + 1, headY + 3, COLORS.fur);
-    }
-    drawPixel(baseX + 2, headY + 1, COLORS.fur);
-    drawPixel(baseX + 3, headY + 1, COLORS.furLight);
-    drawPixel(baseX + 6, headY + 1, COLORS.furLight);
-    drawPixel(baseX + 7, headY + 1, COLORS.fur);
-    
-    // Ears
-    drawPixel(baseX + 2, headY, COLORS.fur);
-    drawPixel(baseX + 2, headY - 1, COLORS.furDark);
-    drawPixel(baseX + 3, headY - 1, COLORS.ear);
-    drawPixel(baseX + 7, headY, COLORS.fur);
-    drawPixel(baseX + 7, headY - 1, COLORS.furDark);
-    drawPixel(baseX + 6, headY - 1, COLORS.ear);
-    
-    // Eyes (follow mouse)
-    const eyeX1 = baseX + 3;
-    const eyeX2 = baseX + 6;
-    const eyeY = headY + 2;
-    
-    // Eye whites
-    drawPixel(eyeX1 + Math.sign(eyeOffsetX), eyeY + Math.sign(eyeOffsetY), COLORS.eye);
-    drawPixel(eyeX2 + Math.sign(eyeOffsetX), eyeY + Math.sign(eyeOffsetY), COLORS.eye);
-    // Eye shine
-    drawPixel(eyeX1 + Math.sign(eyeOffsetX) + 1, eyeY + Math.sign(eyeOffsetY) - 1, COLORS.eyeShine);
-    drawPixel(eyeX2 + Math.sign(eyeOffsetX) + 1, eyeY + Math.sign(eyeOffsetY) - 1, COLORS.eyeShine);
-    
-    // Nose
-    drawPixel(baseX + 4, headY + 3, COLORS.nose);
-    drawPixel(baseX + 5, headY + 3, COLORS.nose);
-    
-    // Front paws
-    drawPixel(baseX + 2, baseY + 5, COLORS.furLight);
-    drawPixel(baseX + 8, baseY + 5, COLORS.furLight);
-    drawPixel(baseX + 2, baseY + 6, COLORS.fur);
-    drawPixel(baseX + 8, baseY + 6, COLORS.fur);
-    
-    // Tail
-    const tailWobble = Math.sin(wobble * 2) * 1;
-    drawPixel(baseX + 11, baseY + 4 + Math.floor(tailWobble), COLORS.fur);
-    drawPixel(baseX + 12, baseY + 3 + Math.floor(tailWobble), COLORS.fur);
-    drawPixel(baseX + 13, baseY + 2 + Math.floor(tailWobble), COLORS.furDark);
-  }
-
-  // Animation loop
-  function animate() {
-    // Smooth follow mouse
-    catX += (targetX - catX) * 0.08;
-    catY += (targetY - catY) * 0.08;
-    
-    // Update position
-    catEl.style.left = `${catX - 16}px`;
-    catEl.style.top = `${catY - 16}px`;
-    
-    // Wobble animation
-    wobble += isHovering ? 0.2 : 0.05;
-    
-    // Jump animation
-    if (isJumping) {
-      jumpY += 0.3;
-      if (jumpY > Math.PI) {
-        isJumping = false;
-        jumpY = 0;
+      for (let j = 0; j < 6; j++) {
+        if (i === 0 || i === 9) {
+          if (j > 0 && j < 5) drawPixel(bx + i, by + j + 4, C.orange);
+        } else {
+          drawPixel(bx + i, by + j + 4, C.orange);
+        }
       }
     }
     
-    // Eye follow mouse
-    const dx = mouseX - catX;
-    const dy = mouseY - catY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    eyeOffsetX = (dx / dist) * 0.5;
-    eyeOffsetY = (dy / dist) * 0.5;
+    // Stripes on body
+    drawPixel(bx + 2, by + 5, C.orangeDark);
+    drawPixel(bx + 2, by + 6, C.orangeDark);
+    drawPixel(bx + 5, by + 5, C.orangeDark);
+    drawPixel(bx + 5, by + 6, C.orangeDark);
+    drawPixel(bx + 7, by + 7, C.orangeDark);
+    
+    // White belly
+    for (let i = 3; i < 7; i++) {
+      drawPixel(bx + i, by + 8, C.white);
+      drawPixel(bx + i, by + 9, C.white);
+    }
+    
+    // === TAIL ===
+    const tailX = facingRight ? bx - 2 : bx + 11;
+    const tailDir = facingRight ? -1 : 1;
+    drawPixel(tailX, by + 4 + tailWag, C.orange);
+    drawPixel(tailX + tailDir, by + 3 + tailWag, C.orange);
+    drawPixel(tailX + tailDir * 2, by + 2 + tailWag * 0.5, C.orangeDark);
+    
+    // === HEAD ===
+    const headY = by - 4;
+    
+    // Head base (round)
+    for (let i = 1; i < 8; i++) {
+      for (let j = 0; j < 5; j++) {
+        drawPixel(bx + i, headY + j, C.orange);
+      }
+    }
+    
+    // Ear tufts (fluffy!)
+    drawPixel(bx + 1, headY - 2, C.orange);
+    drawPixel(bx + 2, headY - 2, C.orangeDark);
+    drawPixel(bx + 2, headY - 1, C.orange);
+    drawPixel(bx + 3, headY - 1, C.pink); // inner ear
+    
+    drawPixel(bx + 7, headY - 2, C.orange);
+    drawPixel(bx + 6, headY - 2, C.orangeDark);
+    drawPixel(bx + 6, headY - 1, C.orange);
+    drawPixel(bx + 5, headY - 1, C.pink); // inner ear
+    
+    // Face markings (orange tabby pattern)
+    drawPixel(bx + 4, headY, C.orangeDark);
+    drawPixel(bx + 4, headY + 1, C.orangeLight);
+    
+    // === EYES ===
+    // Big cute eyes
+    const eyeY = headY + 1;
+    const leftEyeX = bx + 2;
+    const rightEyeX = bx + 6;
+    
+    // Eye whites (big!)
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < eyeHeight; j++) {
+        drawPixel(leftEyeX + i, eyeY + j, C.whiteEye);
+        drawPixel(rightEyeX + i, eyeY + j, C.whiteEye);
+      }
+    }
+    
+    // Pupils (follow mouse)
+    const dx = mouseX - x;
+    const dy = mouseY - y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const pupilOffsetX = Math.round((dx / dist) * 0.5);
+    const pupilOffsetY = Math.round((dy / dist) * 0.3);
+    
+    if (eyeHeight > 0) {
+      drawPixel(leftEyeX + pupilOffsetX, eyeY + pupilOffsetY, C.black);
+      drawPixel(rightEyeX + pupilOffsetX, eyeY + pupilOffsetY, C.black);
+      // Shine
+      drawPixel(leftEyeX + 1, eyeY, C.whiteEye);
+      drawPixel(rightEyeX + 1, eyeY, C.whiteEye);
+    }
+    
+    // === NOSE ===
+    drawPixel(bx + 4, headY + 3, C.pink);
+    drawPixel(bx + 4, headY + 4, C.pinkDark);
+    
+    // === MOUTH ===
+    if (state === 'yawn') {
+      // Open mouth (yawning)
+      drawPixel(bx + 3, headY + 5, C.pinkDark);
+      drawPixel(bx + 4, headY + 5, C.pinkDark);
+      drawPixel(bx + 5, headY + 5, C.pinkDark);
+    } else {
+      // Normal :3 mouth
+      drawPixel(bx + 3, headY + 4, C.orangeDark);
+      drawPixel(bx + 5, headY + 4, C.orangeDark);
+    }
+    
+    // === PAWS ===
+    const pawY = by + 9;
+    const pawOffset = state === 'walk' ? walkOffset : 0;
+    
+    // Front paws
+    drawPixel(bx + 1, pawY + Math.abs(pawOffset), C.orange);
+    drawPixel(bx + 2, pawY + Math.abs(pawOffset), C.white);
+    drawPixel(bx + 8, pawY - Math.abs(pawOffset), C.orange);
+    drawPixel(bx + 7, pawY - Math.abs(pawOffset), C.white);
+    
+    // === SLEEP Zs ===
+    if (state === 'sleep') {
+      ctx.font = '8px monospace';
+      ctx.fillStyle = '#ffffff';
+      const zOffset = Math.sin(frame * 0.1) * 2;
+      ctx.fillText('z', (bx + 12) * 4 + zOffset, (headY - 2) * 4);
+      ctx.fillText('Z', (bx + 14) * 4 + zOffset * 0.5, (headY - 4) * 4);
+    }
+  }
+  
+  function drawButterfly() {
+    if (!butterfly) return;
+    
+    const wingFlap = Math.sin(frame * 0.4) * 3;
+    
+    ctx.fillStyle = '#ffeb3b';
+    // Wings
+    ctx.beginPath();
+    ctx.ellipse(butterfly.x * 4 + wingFlap, butterfly.y * 4, 4, 3, butterfly.angle, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(butterfly.x * 4 - wingFlap, butterfly.y * 4, 4, 3, butterfly.angle, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Body
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(butterfly.x * 4 - 1, butterfly.y * 4 - 2, 2, 4);
+  }
+
+  function updateState() {
+    const distToMouse = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
+    
+    // State transitions
+    sleepTimer++;
+    
+    // Get sleepy after 15 seconds of no interaction
+    if (sleepTimer > 900 && state === 'idle') {
+      state = 'sleep';
+      sleepiness = 0;
+    }
+    
+    // Wake up on mouse move
+    if (distToMouse > 100) {
+      sleepTimer = 0;
+      if (state === 'sleep') {
+        state = 'yawn';
+        setTimeout(() => { if (state === 'yawn') state = 'idle'; }, 1000);
+      }
+    }
+    
+    // Chase butterfly occasionally
+    if (state === 'idle' && Math.random() < 0.002) {
+      state = 'play';
+      butterfly = {
+        x: x / 4 + (Math.random() - 0.5) * 20,
+        y: y / 4 - 10,
+        angle: 0
+      };
+    }
+    
+    // Stop playing
+    if (state === 'play' && (!butterfly || frame % 300 === 0)) {
+      state = 'idle';
+      butterfly = null;
+    }
+    
+    // Walking
+    if (distToMouse > 150 && state !== 'sleep' && state !== 'play') {
+      state = 'walk';
+    } else if (state === 'walk' && distToMouse < 100) {
+      state = 'idle';
+    }
+    
+    // Update facing direction
+    if (mouseX > x + 20) facingRight = true;
+    else if (mouseX < x - 20) facingRight = false;
+  }
+
+  function animate() {
+    frame++;
+    
+    // Update position
+    const dx = targetX - x;
+    const dy = targetY - y;
+    const speed = state === 'walk' ? 0.05 : 0.08;
+    x += dx * speed;
+    y += dy * speed;
+    
+    canvas.style.left = `${x - 32}px`;
+    canvas.style.top = `${y - 32}px`;
+    canvas.style.display = 'block';
+    catEl.style.display = 'none';
+    
+    // Flip for direction
+    if (!facingRight) {
+      canvas.style.transform = 'scaleX(-1)';
+    } else {
+      canvas.style.transform = 'scaleX(1)';
+    }
+    
+    updateState();
+    
+    // Butterfly movement
+    if (butterfly && state === 'play') {
+      butterfly.angle += 0.1;
+      butterfly.x += Math.sin(frame * 0.05) * 0.3;
+      butterfly.y += Math.cos(frame * 0.03) * 0.2 - 0.1;
+    }
     
     drawCat();
+    drawButterfly();
+    
     requestAnimationFrame(animate);
   }
 
-  // Mouse move handler
+  // Event listeners
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
     
-    // Cat follows mouse with some distance
-    const distance = 60;
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
+    // Cat follows mouse loosely
+    targetX = window.innerWidth / 2 + (mouseX - window.innerWidth / 2) * 0.3;
+    targetY = window.innerHeight / 2 + (mouseY - window.innerHeight / 2) * 0.2;
     
-    // Stay in a general area, but react to mouse
-    targetX = centerX + (mouseX - centerX) * 0.15;
-    targetY = centerY + (mouseY - centerY) * 0.15;
+    sleepTimer = 0;
   });
 
-  // Hover detection
+  // Interactions
   document.querySelectorAll('a, button').forEach(el => {
     el.addEventListener('mouseenter', () => {
-      isHovering = true;
-      if (!isJumping && Math.random() > 0.7) {
-        isJumping = true;
-        jumpY = 0;
-      }
-    });
-    el.addEventListener('mouseleave', () => {
-      isHovering = false;
+      sleepTimer = 0;
+      if (state === 'sleep') state = 'yawn';
+      setTimeout(() => { if (state === 'yawn') state = 'idle'; }, 800);
     });
   });
 
-  // Click to jump
   document.addEventListener('click', () => {
-    if (!isJumping) {
-      isJumping = true;
-      jumpY = 0;
+    sleepTimer = 0;
+    if (state === 'sleep') {
+      state = 'yawn';
+      setTimeout(() => { state = 'idle'; }, 800);
     }
   });
 
-  // Start animation
   animate();
 </script>
