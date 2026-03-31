@@ -1,69 +1,197 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const projects = [
+  { title: '个人博客系统', description: '基于 Astro 构建的静态博客，支持 Markdown 写作、暗色主题和全文搜索。', tags: ['Astro', 'TypeScript', 'Tailwind CSS'], link: '#' },
+  { title: '任务管理应用', description: '全栈任务管理工具，支持看板视图、拖拽排序和团队协作功能。', tags: ['React', 'Node.js', 'PostgreSQL'], link: '#' },
+  { title: '天气数据可视化', description: '实时天气数据可视化面板，集成多个气象 API，支持历史数据对比分析。', tags: ['Vue.js', 'D3.js', 'Python'], link: '#' },
+];
+
+const milestones = [
+  { date: '2024.09', title: '踏入编程世界', description: '开始学习 HTML、CSS 和 JavaScript，完成了第一个静态网页项目。', icon: '🌱' },
+  { date: '2025.03', title: '深入前端框架', description: '系统学习 React 和 Vue.js，掌握组件化开发思想。', icon: '⚡' },
+  { date: '2025.09', title: '全栈开发探索', description: '学习 Node.js 和数据库技术，完成多个全栈项目。', icon: '🚀' },
+  { date: '2026.03', title: '持续精进', description: '深入 TypeScript 和现代工具链，探索 AI 辅助开发。', icon: '✨' },
+];
+
+const skills = [
+  { category: '前端', items: ['TypeScript', 'React', 'Vue.js', 'Astro', 'Tailwind CSS'] },
+  { category: '后端', items: ['Node.js', 'Python', 'PostgreSQL', 'REST API'] },
+  { category: '工具', items: ['Git', 'Docker', 'VS Code', 'Figma'] },
+];
 ---
 
-<Layout title="首页 | Portfolio">
-  <section class="relative flex items-center justify-center min-h-[calc(100vh-4rem)] overflow-hidden">
+<Layout title="Ruixuan | Portfolio">
+  <!-- Hero Section -->
+  <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
     <canvas id="hero-canvas" class="absolute inset-0 w-full h-full"></canvas>
+    <div id="hero-overlay" class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg pointer-events-none"></div>
+    
     <div class="relative z-10 text-center px-6">
-      <p class="text-text-muted text-sm tracking-widest uppercase mb-4">Welcome</p>
-      <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+      <p class="text-text-muted text-sm tracking-widest uppercase mb-4 animate-fade-in-up">Welcome</p>
+      <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 animate-fade-in-up animation-delay-100">
         你好，我是 <span class="text-accent">Ruixuan</span>
       </h1>
-      <p class="text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-8">
+      <p class="text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-8 animate-fade-in-up animation-delay-200">
         全栈开发者 / 终身学习者 / 开源爱好者
       </p>
-      <div class="flex items-center justify-center gap-4">
-        <a href={`${import.meta.env.BASE_URL}projects/`} class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-lg text-sm font-medium transition-colors">
-          查看作品
-        </a>
-        <a href={`${import.meta.env.BASE_URL}about/`} class="px-6 py-2.5 border border-border hover:border-accent/50 rounded-lg text-sm font-medium transition-colors text-text-muted hover:text-text">
-          了解更多
-        </a>
+      <div class="flex items-center justify-center gap-4 animate-fade-in-up animation-delay-300">
+        <a href="#projects" class="nav-link px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-lg text-sm font-medium transition-colors">查看作品</a>
+        <a href="#about" class="nav-link px-6 py-2.5 border border-border hover:border-accent/50 rounded-lg text-sm font-medium transition-colors text-text-muted hover:text-text">了解更多</a>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="min-h-screen py-32 px-6 relative">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="parallax-bg absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-accent/5 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="mx-auto max-w-5xl relative z-10">
+      <div class="section-animate opacity-0 translate-y-8">
+        <h2 class="text-4xl font-bold tracking-tight mb-2">作品集</h2>
+        <p class="text-text-muted mb-12">一些我参与或独立完成的项目。</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {projects.map((project, i) => (
+          <a href={project.link} class="section-animate opacity-0 translate-y-8 group block rounded-xl border border-border bg-surface p-6 transition-all hover:border-accent/30 hover:bg-surface-hover hover:-translate-y-1" style={`transition-delay: ${(i + 1) * 100}ms`}>
+            <div class="mb-4 flex items-center justify-between">
+              <svg class="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
+              <svg class="w-5 h-5 text-text-muted opacity-0 transition-opacity group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 17L17 7M17 7H7M17 7v10" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold mb-2 group-hover:text-accent transition-colors">{project.title}</h3>
+            <p class="text-sm text-text-muted mb-4 leading-relaxed">{project.description}</p>
+            <div class="flex flex-wrap gap-2">
+              {project.tags.map((tag) => (<span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">{tag}</span>))}
+            </div>
+          </a>
+        ))}
       </div>
     </div>
   </section>
+
+  <!-- Timeline Section -->
+  <section id="timeline" class="min-h-screen py-32 px-6 relative bg-surface/50">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="parallax-bg absolute top-1/4 right-0 w-1/3 h-1/2 bg-blue-500/5 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="mx-auto max-w-3xl relative z-10">
+      <div class="section-animate opacity-0 translate-y-8">
+        <h2 class="text-4xl font-bold tracking-tight mb-2">学习时间线</h2>
+        <p class="text-text-muted mb-16">我的成长路径与关键里程碑。</p>
+      </div>
+
+      <div class="relative">
+        <div class="absolute left-6 top-0 bottom-0 w-px bg-border"></div>
+        <div class="space-y-12">
+          {milestones.map((m, i) => (
+            <div class="section-animate opacity-0 translate-x-[-20px] relative pl-16" style={`transition-delay: ${i * 150}ms`}>
+              <div class="absolute left-4 top-1 w-5 h-5 rounded-full border-2 border-accent bg-bg flex items-center justify-center text-xs">{m.icon}</div>
+              <span class="text-xs font-mono text-accent tracking-wider">{m.date}</span>
+              <h3 class="text-xl font-semibold mt-1 mb-2">{m.title}</h3>
+              <p class="text-text-muted leading-relaxed">{m.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="min-h-screen py-32 px-6 relative">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="parallax-bg absolute bottom-0 left-1/4 w-1/2 h-1/2 bg-green-500/5 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="mx-auto max-w-3xl relative z-10">
+      <div class="section-animate opacity-0 translate-y-8">
+        <h2 class="text-4xl font-bold tracking-tight mb-2">关于我</h2>
+        <p class="text-text-muted mb-12">了解更多关于我的信息。</p>
+      </div>
+
+      <div class="space-y-12">
+        <div class="section-animate opacity-0 translate-y-8 rounded-xl border border-border bg-surface p-8">
+          <p class="text-lg leading-relaxed mb-4">你好！我是一名全栈开发者，热爱用代码创造有价值的产品。</p>
+          <p class="text-text-muted leading-relaxed mb-4">我喜欢探索新技术，关注开发者体验和产品设计。目前专注于现代 Web 开发，同时也在学习系统设计和 AI 应用开发。</p>
+          <p class="text-text-muted leading-relaxed">工作之余，我喜欢阅读、写作技术博客，偶尔也会参与开源项目贡献。</p>
+        </div>
+
+        <div class="section-animate opacity-0 translate-y-8">
+          <h3 class="text-2xl font-semibold mb-6">技术栈</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {skills.map((group) => (
+              <div class="rounded-xl border border-border bg-surface p-6">
+                <h4 class="text-sm font-medium text-accent mb-4">{group.category}</h4>
+                <ul class="space-y-2">
+                  {group.items.map((item) => (<li class="text-sm text-text-muted flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent/50"></span>{item}</li>))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="section-animate opacity-0 translate-y-8">
+          <h3 class="text-2xl font-semibold mb-6">联系我</h3>
+          <div class="flex flex-wrap gap-4">
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-accent/30 hover:bg-surface-hover transition-all text-sm text-text-muted hover:text-text">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+            <a href="mailto:wangruixuan@xiaohongshu.com" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-accent/30 hover:bg-surface-hover transition-all text-sm text-text-muted hover:text-text">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              Email
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 px-6 border-t border-border">
+    <div class="mx-auto max-w-5xl text-center text-sm text-text-muted">
+      <p>© 2026 Ruixuan. Built with Astro + Tailwind + Pretext.</p>
+    </div>
+  </footer>
 </Layout>
 
-<script>
-  import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext';
+<style>
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in-up { animation: fade-in-up 0.6s ease-out forwards; }
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .section-animate { transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .section-animate.visible { opacity: 1 !important; transform: translateY(0) translateX(0) !important; }
+  html { scroll-behavior: smooth; }
+</style>
 
+<script>
+  // Canvas floating text animation
   const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
-  let dpr = window.devicePixelRatio || 1;
-  let width = 0;
-  let height = 0;
-  let animFrame: number;
-  let time = 0;
-
-  const phrases = [
-    'Code',
-    'Design',
-    'Create',
-    'Build',
-    'Ship',
-    'Learn',
-    'Explore',
-    'Dream',
-    '构建',
-    '创造',
-    '探索',
-  ];
-
-  interface FloatingText {
-    text: string;
-    x: number;
-    y: number;
-    vx: number;
-    vy: number;
-    fontSize: number;
-    opacity: number;
-  }
-
-  const particles: FloatingText[] = [];
+  let width = 0, height = 0, time = 0;
+  const phrases = ['Code', 'Design', 'Create', 'Build', 'Ship', 'Learn', 'Explore', 'Dream', '构建', '创造', '探索'];
+  const particles: { text: string; x: number; y: number; vx: number; vy: number; fontSize: number; opacity: number }[] = [];
 
   function resize() {
-    dpr = window.devicePixelRatio || 1;
+    const dpr = window.devicePixelRatio || 1;
     width = canvas.clientWidth;
     height = canvas.clientHeight;
     canvas.width = width * dpr;
@@ -73,7 +201,7 @@ import Layout from '../layouts/Layout.astro';
 
   function initParticles() {
     particles.length = 0;
-    const count = Math.min(Math.floor((width * height) / 40000), 20);
+    const count = Math.min(Math.floor((width * height) / 40000), 15);
     for (let i = 0; i < count; i++) {
       particles.push({
         text: phrases[Math.floor(Math.random() * phrases.length)],
@@ -91,7 +219,6 @@ import Layout from '../layouts/Layout.astro';
     time += 0.005;
     ctx.clearRect(0, 0, width, height);
 
-    // Draw floating text particles using pretext for measurement
     for (const p of particles) {
       p.x += p.vx;
       p.y += p.vy;
@@ -100,21 +227,14 @@ import Layout from '../layouts/Layout.astro';
       if (p.y < -50) p.y = height + 50;
       if (p.y > height + 50) p.y = -50;
 
-      const font = `${Math.round(p.fontSize)}px "Inter", system-ui, sans-serif`;
-      const prepared = prepareWithSegments(p.text, font);
-      const { lines } = layoutWithLines(prepared, 400, p.fontSize * 1.4);
-
       const wave = Math.sin(time + p.x * 0.01) * 0.02;
       ctx.globalAlpha = p.opacity + wave;
-      ctx.font = font;
+      ctx.font = `${p.fontSize}px "Inter", system-ui, sans-serif`;
       ctx.fillStyle = '#818cf8';
-
-      for (let i = 0; i < lines.length; i++) {
-        ctx.fillText(lines[i].text, p.x, p.y + i * p.fontSize * 1.4);
-      }
+      ctx.fillText(p.text, p.x, p.y);
     }
 
-    // Draw grid dots
+    // Grid dots
     ctx.globalAlpha = 0.04;
     ctx.fillStyle = '#818cf8';
     const spacing = 40;
@@ -126,17 +246,48 @@ import Layout from '../layouts/Layout.astro';
         ctx.fill();
       }
     }
-
     ctx.globalAlpha = 1;
-    animFrame = requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
   }
 
   resize();
   initParticles();
   draw();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
 
-  window.addEventListener('resize', () => {
-    resize();
-    initParticles();
+  // Scroll-triggered animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.section-animate').forEach(el => observer.observe(el));
+
+  // Nav highlighting on scroll
+  const sections = ['hero', 'projects', 'timeline', 'about'];
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  function updateNav() {
+    const scrollY = window.scrollY + window.innerHeight / 3;
+    let current = 'hero';
+    for (const id of sections) {
+      const el = document.getElementById(id);
+      if (el && el.offsetTop <= scrollY) current = id;
+    }
+    // Update active nav (simplified - just smooth scroll)
+  }
+  window.addEventListener('scroll', updateNav);
+
+  // Parallax backgrounds
+  const parallaxBgs = document.querySelectorAll('.parallax-bg');
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    parallaxBgs.forEach((bg) => {
+      const speed = parseFloat((bg as HTMLElement).dataset.speed || '0.2');
+      (bg as HTMLElement).style.transform = `translateY(${scrollY * speed}px)`;
+    });
   });
 </script>
