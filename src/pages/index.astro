@@ -3,32 +3,84 @@ import Layout from '../layouts/Layout.astro';
 
 const projects = [
   { 
+    id: 'slow-sql',
     title: '慢SQL治理平台', 
     description: '小红书核心项目。设计聚合+告警+持久化流水线，聚合耗时下降60%，并发QPS提升2.1倍，覆盖900+集群。', 
     tags: ['Java', 'Kafka', 'ClickHouse', 'Redis'], 
-    link: '#',
-    highlight: true
+    highlight: true,
+    details: {
+      role: '项目主导',
+      time: '2025.09 - 2026.03',
+      company: '小红书 - 关系型数据库平台研发组',
+      overview: '设计并落地聚合+告警+持久化流水线，补齐告警订阅与巡检功能，形成优化闭环。',
+      achievements: [
+        '高性能聚合器：基于时间窗口轮转实现分层聚合结构，优化并发模型降低热点Key锁竞争，聚合耗时下降60%（830ms→340ms），并发QPS提升2.1倍',
+        'Kafka消费一致性：采用Hash分片与Sticky+StaticMember消费策略，保障多Pod场景下聚合一致性，降低数据抖动与重复告警',
+        '平台能力闭环：实现动态通知、静默、白名单、自定义配置、跳转详情，集成索引推荐与根因定位',
+        '整体规模：Binlog采集链路覆盖900+集群，Kafka写入流量100+MB/s，单实例峰值7K+ Event QPS'
+      ],
+      tech: ['Java', 'Kafka', 'ClickHouse', 'Redis', 'Spring Boot']
+    }
   },
   { 
+    id: 'full-sql',
     title: '全量SQL分析系统', 
     description: 'Binlog实时采集与持久化，单Pod吞吐提升2倍，峰值7K+ Event QPS，端到端延迟<1min。', 
     tags: ['Java', 'Protobuf', 'LZ4', 'ClickHouse'], 
-    link: '#',
-    highlight: true
+    highlight: true,
+    details: {
+      role: '负责人',
+      time: '2025.10 - 2026.02',
+      company: '小红书 - 关系型数据库平台研发组',
+      overview: '负责Binlog SQL实时采集与持久化，提供TOP SQL定位、表级流量分析等能力，实现SQL写入可观测。',
+      achievements: [
+        '消费链路调优：通过PProf定位瓶颈，采用池化复用、列式插入等优化，单Pod吞吐提升2倍（12→25MB/s），端到端延迟<1min',
+        'MQ发送优化：采用Protobuf序列化+LZ4压缩降低网络开销，环形缓冲区+令牌桶优化文件读取，单分片稳定处理4K+ Event QPS',
+        '整体架构设计：Reader/Sender架构，采集解析与聚合发送解耦，消费侧多Worker并发消费+批量写入，全链路支持水平扩展',
+        '异步聚合+核查：降低数据噪声1/3+，增量/日报双轨告警接入IM触达到人，增量收口效率显著提升'
+      ],
+      tech: ['Java', 'Protobuf', 'LZ4', 'ClickHouse', 'Kafka']
+    }
   },
   { 
+    id: 'shishan-health',
     title: '狮山健康小程序', 
     description: 'AI健康管理小程序，集成Qwen实现健康问答，WebSocket流式输出TTFT≈490ms，获校级认证。', 
     tags: ['Spring Boot', 'WebSocket', 'Qwen', 'Redis'], 
-    link: '#',
-    highlight: false
+    highlight: false,
+    details: {
+      role: '独立开发',
+      time: '2024.10 - 2025.03',
+      company: '华中农业大学认证项目',
+      overview: '基于微信生态的AI健康管理程序，提供健康建议、饮食评分、运动打卡、排行榜等功能，生成个性化建议，激励健康习惯养成。',
+      achievements: [
+        '集成Qwen+菜品识别API实现健康问答与营养分析，通过Prompt+样本微调，问答准确率70%→80%，菜品分析准确率提升15%',
+        'WebSocket实现AI回答流式输出，TTFT≈490ms（30轮），用写时删除与TTL控制策略，降低大模型调用频率',
+        'Redis缓存架构：实现排行榜(ZSet)/浏览量(Hash)/点赞(延迟双删)，Canal+binlog保障缓存一致性',
+        '微信生态对接：ThreadLocal传递用户信息，实现微信快捷登录，获取用户步数、定位与跑步速率等运动数据'
+      ],
+      tech: ['Spring Boot', 'Spring Security', 'WebSocket', 'Qwen', 'Redis', 'MySQL']
+    }
   },
   { 
+    id: 'code-knowledge',
     title: '代码知识库平台', 
     description: 'TB级代码存储库平台，ES双索引多维检索，160W行CSV导出<3min，性能提升百倍。', 
     tags: ['Spring Boot', 'Elasticsearch', 'Redis', 'NIO'], 
-    link: '#',
-    highlight: false
+    highlight: false,
+    details: {
+      role: '独立开发',
+      time: '2025.05 - 2025.07',
+      company: '个人项目',
+      overview: '面向TB级代码项目的代码存储库平台，提供大数据导入导出、多维检索、自动化标签等功能。',
+      achievements: [
+        '基于ES双索引（project/code）满足项目与代码双重检索，实现多维度检索和关键词查询',
+        '用Scroll API优化深度分页导出性能，基于Redis Bitmap/Hash实现异步任务进度条和导入导出断点续传',
+        '用LRU Cache实现导出数据去重避免OOM风险，用NIO零拷贝优化文件下载，CPU与IO负载分别降低10%和8%',
+        '双线程池优化导出，160W行CSV碎片化导出<3min，分块LOAD+Bulk API提升入库效率（相比批处理百倍提升）'
+      ],
+      tech: ['Spring Boot', 'Elasticsearch', 'Redis', 'MySQL', 'NIO']
+    }
   },
 ];
 
@@ -92,7 +144,7 @@ const skills = [
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((project, i) => (
-          <a href={project.link} class="section-animate opacity-0 translate-y-8 group block rounded-xl border border-border bg-surface p-6 transition-all duration-300 ease-out hover:border-accent/40 hover:bg-surface-hover hover:shadow-lg hover:shadow-accent/5 relative overflow-hidden" style={`transition-delay: ${(i + 1) * 100}ms`}>
+          <button data-project-id={project.id} class="project-card section-animate opacity-0 translate-y-8 group block rounded-xl border border-border bg-surface p-6 transition-all duration-300 ease-out hover:border-accent/40 hover:bg-surface-hover hover:shadow-lg hover:shadow-accent/5 relative overflow-hidden text-left" style={`transition-delay: ${(i + 1) * 100}ms`}>
             {project.highlight && (
               <div class="absolute top-3 right-3 px-2 py-0.5 text-xs font-medium bg-accent/20 text-accent rounded-full">实习项目</div>
             )}
@@ -109,11 +161,30 @@ const skills = [
             <div class="flex flex-wrap gap-2">
               {project.tags.map((tag) => (<span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent transition-colors duration-300 group-hover:bg-accent/20">{tag}</span>))}
             </div>
-          </a>
+          </button>
         ))}
       </div>
     </div>
   </section>
+
+  <!-- Project Modal -->
+  <div id="project-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-bg/80 backdrop-blur-sm" id="modal-backdrop"></div>
+    <div class="absolute inset-4 md:inset-8 lg:inset-16 overflow-y-auto">
+      <div class="min-h-full flex items-start justify-center py-8">
+        <div id="modal-content" class="relative w-full max-w-3xl bg-surface border border-border rounded-2xl shadow-2xl opacity-0 transform scale-95 transition-all duration-300">
+          <button id="modal-close" class="absolute top-4 right-4 p-2 rounded-lg hover:bg-surface-hover transition-colors text-text-muted hover:text-text">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <div id="modal-body" class="p-8">
+            <!-- Content will be injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Timeline Section -->
   <section id="timeline" class="min-h-screen py-32 px-6 relative bg-surface/50">
@@ -403,5 +474,158 @@ const skills = [
         console.error('Failed to copy:', err);
       }
     });
+  });
+
+  // Project modal
+  const projectsData = [
+    { 
+      id: 'slow-sql',
+      title: '慢SQL治理平台',
+      role: '项目主导',
+      time: '2025.09 - 2026.03',
+      company: '小红书 - 关系型数据库平台研发组',
+      overview: '设计并落地聚合+告警+持久化流水线，补齐告警订阅与巡检功能，形成优化闭环。',
+      achievements: [
+        '高性能聚合器：基于时间窗口轮转实现分层聚合结构，优化并发模型降低热点Key锁竞争，聚合耗时下降60%（830ms→340ms），并发QPS提升2.1倍',
+        'Kafka消费一致性：采用Hash分片与Sticky+StaticMember消费策略，保障多Pod场景下聚合一致性，降低数据抖动与重复告警',
+        '平台能力闭环：实现动态通知、静默、白名单、自定义配置、跳转详情，集成索引推荐与根因定位',
+        '整体规模：Binlog采集链路覆盖900+集群，Kafka写入流量100+MB/s，单实例峰值7K+ Event QPS'
+      ],
+      tech: ['Java', 'Kafka', 'ClickHouse', 'Redis', 'Spring Boot']
+    },
+    { 
+      id: 'full-sql',
+      title: '全量SQL分析系统',
+      role: '负责人',
+      time: '2025.10 - 2026.02',
+      company: '小红书 - 关系型数据库平台研发组',
+      overview: '负责Binlog SQL实时采集与持久化，提供TOP SQL定位、表级流量分析等能力，实现SQL写入可观测。',
+      achievements: [
+        '消费链路调优：通过PProf定位瓶颈，采用池化复用、列式插入等优化，单Pod吞吐提升2倍（12→25MB/s），端到端延迟<1min',
+        'MQ发送优化：采用Protobuf序列化+LZ4压缩降低网络开销，环形缓冲区+令牌桶优化文件读取，单分片稳定处理4K+ Event QPS',
+        '整体架构设计：Reader/Sender架构，采集解析与聚合发送解耦，消费侧多Worker并发消费+批量写入，全链路支持水平扩展',
+        '异步聚合+核查：降低数据噪声1/3+，增量/日报双轨告警接入IM触达到人，增量收口效率显著提升'
+      ],
+      tech: ['Java', 'Protobuf', 'LZ4', 'ClickHouse', 'Kafka']
+    },
+    { 
+      id: 'shishan-health',
+      title: '狮山健康小程序',
+      role: '独立开发',
+      time: '2024.10 - 2025.03',
+      company: '华中农业大学认证项目',
+      overview: '基于微信生态的AI健康管理程序，提供健康建议、饮食评分、运动打卡、排行榜等功能，生成个性化建议，激励健康习惯养成。',
+      achievements: [
+        '集成Qwen+菜品识别API实现健康问答与营养分析，通过Prompt+样本微调，问答准确率70%→80%，菜品分析准确率提升15%',
+        'WebSocket实现AI回答流式输出，TTFT≈490ms（30轮），用写时删除与TTL控制策略，降低大模型调用频率',
+        'Redis缓存架构：实现排行榜(ZSet)/浏览量(Hash)/点赞(延迟双删)，Canal+binlog保障缓存一致性',
+        '微信生态对接：ThreadLocal传递用户信息，实现微信快捷登录，获取用户步数、定位与跑步速率等运动数据'
+      ],
+      tech: ['Spring Boot', 'Spring Security', 'WebSocket', 'Qwen', 'Redis', 'MySQL']
+    },
+    { 
+      id: 'code-knowledge',
+      title: '代码知识库平台',
+      role: '独立开发',
+      time: '2025.05 - 2025.07',
+      company: '个人项目',
+      overview: '面向TB级代码项目的代码存储库平台，提供大数据导入导出、多维检索、自动化标签等功能。',
+      achievements: [
+        '基于ES双索引（project/code）满足项目与代码双重检索，实现多维度检索和关键词查询',
+        '用Scroll API优化深度分页导出性能，基于Redis Bitmap/Hash实现异步任务进度条和导入导出断点续传',
+        '用LRU Cache实现导出数据去重避免OOM风险，用NIO零拷贝优化文件下载，CPU与IO负载分别降低10%和8%',
+        '双线程池优化导出，160W行CSV碎片化导出<3min，分块LOAD+Bulk API提升入库效率（相比批处理百倍提升）'
+      ],
+      tech: ['Spring Boot', 'Elasticsearch', 'Redis', 'MySQL', 'NIO']
+    }
+  ];
+
+  const modal = document.getElementById('project-modal');
+  const modalContent = document.getElementById('modal-content');
+  const modalBody = document.getElementById('modal-body');
+  const modalClose = document.getElementById('modal-close');
+  const modalBackdrop = document.getElementById('modal-backdrop');
+
+  function openModal(projectId: string) {
+    const project = projectsData.find(p => p.id === projectId);
+    if (!project || !modal || !modalBody || !modalContent) return;
+
+    modalBody.innerHTML = `
+      <div class="mb-6">
+        <h2 class="text-3xl font-bold mb-2">${project.title}</h2>
+        <div class="flex flex-wrap gap-3 text-sm text-text-muted">
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            ${project.role}
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            ${project.time}
+          </span>
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            ${project.company}
+          </span>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold mb-3 text-accent">项目概述</h3>
+        <p class="text-text-muted leading-relaxed">${project.overview}</p>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold mb-3 text-accent">核心成果</h3>
+        <ul class="space-y-3">
+          ${project.achievements.map(a => `
+            <li class="flex gap-3 text-text-muted leading-relaxed">
+              <span class="text-accent mt-1.5">•</span>
+              <span>${a}</span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold mb-3 text-accent">技术栈</h3>
+        <div class="flex flex-wrap gap-2">
+          ${project.tech.map(t => `<span class="px-3 py-1 text-sm rounded-full bg-accent/10 text-accent">${t}</span>`).join('')}
+        </div>
+      </div>
+    `;
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    requestAnimationFrame(() => {
+      modalContent.classList.remove('opacity-0', 'scale-95');
+      modalContent.classList.add('opacity-100', 'scale-100');
+    });
+  }
+
+  function closeModal() {
+    if (!modal || !modalContent) return;
+    modalContent.classList.remove('opacity-100', 'scale-100');
+    modalContent.classList.add('opacity-0', 'scale-95');
+    
+    setTimeout(() => {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }, 300);
+  }
+
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const projectId = (card as HTMLElement).dataset.projectId;
+      if (projectId) openModal(projectId);
+    });
+  });
+
+  modalClose?.addEventListener('click', closeModal);
+  modalBackdrop?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+      closeModal();
+    }
   });
 </script>
