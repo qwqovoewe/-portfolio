@@ -2,22 +2,52 @@
 import Layout from '../layouts/Layout.astro';
 
 const projects = [
-  { title: '个人博客系统', description: '基于 Astro 构建的静态博客，支持 Markdown 写作、暗色主题和全文搜索。', tags: ['Astro', 'TypeScript', 'Tailwind CSS'], link: '#' },
-  { title: '任务管理应用', description: '全栈任务管理工具，支持看板视图、拖拽排序和团队协作功能。', tags: ['React', 'Node.js', 'PostgreSQL'], link: '#' },
-  { title: '天气数据可视化', description: '实时天气数据可视化面板，集成多个气象 API，支持历史数据对比分析。', tags: ['Vue.js', 'D3.js', 'Python'], link: '#' },
+  { 
+    title: '慢SQL治理平台', 
+    description: '小红书核心项目。设计聚合+告警+持久化流水线，聚合耗时下降60%，并发QPS提升2.1倍，覆盖900+集群。', 
+    tags: ['Java', 'Kafka', 'ClickHouse', 'Redis'], 
+    link: '#',
+    highlight: true
+  },
+  { 
+    title: '全量SQL分析系统', 
+    description: 'Binlog实时采集与持久化，单Pod吞吐提升2倍，峰值7K+ Event QPS，端到端延迟<1min。', 
+    tags: ['Java', 'Protobuf', 'LZ4', 'ClickHouse'], 
+    link: '#',
+    highlight: true
+  },
+  { 
+    title: '狮山健康小程序', 
+    description: 'AI健康管理小程序，集成Qwen实现健康问答，WebSocket流式输出TTFT≈490ms，获校级认证。', 
+    tags: ['Spring Boot', 'WebSocket', 'Qwen', 'Redis'], 
+    link: '#',
+    highlight: false
+  },
+  { 
+    title: '代码知识库平台', 
+    description: 'TB级代码存储库平台，ES双索引多维检索，160W行CSV导出<3min，性能提升百倍。', 
+    tags: ['Spring Boot', 'Elasticsearch', 'Redis', 'NIO'], 
+    link: '#',
+    highlight: false
+  },
 ];
 
 const milestones = [
-  { date: '2024.09', title: '踏入编程世界', description: '开始学习 HTML、CSS 和 JavaScript，完成了第一个静态网页项目。', icon: '🌱' },
-  { date: '2025.03', title: '深入前端框架', description: '系统学习 React 和 Vue.js，掌握组件化开发思想。', icon: '⚡' },
-  { date: '2025.09', title: '全栈开发探索', description: '学习 Node.js 和数据库技术，完成多个全栈项目。', icon: '🚀' },
-  { date: '2026.03', title: '持续精进', description: '深入 TypeScript 和现代工具链，探索 AI 辅助开发。', icon: '✨' },
+  { date: '2023.09', title: '进入华中农业大学', description: '计算机科学与技术专业，开始系统学习计算机基础课程。', icon: '🎓' },
+  { date: '2024.03', title: '担任沸点工作室总负责人', description: '负责技术人才培养、项目对接与团队管理。', icon: '👥' },
+  { date: '2024.10', title: '狮山健康小程序立项', description: '获得华中农业大学认证，集成AI健康管理功能。', icon: '💡' },
+  { date: '2025.05', title: '代码知识库平台开发', description: '独立完成TB级代码存储库平台，性能优化成果显著。', icon: '🚀' },
+  { date: '2025.09', title: '入职小红书', description: '加入关系型数据库平台研发组，参与核心基础设施建设。', icon: '💼' },
+  { date: '2026.03', title: '实习成果总结', description: '主导慢SQL治理与全量SQL分析，支撑日均百万级数据处理。', icon: '✨' },
 ];
 
 const skills = [
-  { category: '前端', items: ['TypeScript', 'React', 'Vue.js', 'Astro', 'Tailwind CSS'] },
-  { category: '后端', items: ['Node.js', 'Python', 'PostgreSQL', 'REST API'] },
-  { category: '工具', items: ['Git', 'Docker', 'VS Code', 'Figma'] },
+  { category: 'Java/Go', items: ['Java基础', 'JVM调优', 'JUC并发', 'Go pprof'] },
+  { category: '数据库', items: ['MySQL', 'Redis', 'ClickHouse', 'Kafka'] },
+  { category: '框架', items: ['Spring Boot', 'Spring Security', 'MyBatis', 'gRPC'] },
+  { category: '中间件', items: ['Kafka', 'Canal', 'Elasticsearch', 'WebSocket'] },
+  { category: '设计模式', items: ['单例', '工厂', '策略', '责任链', '模板方法'] },
+  { category: '工程实践', items: ['性能优化', '高并发架构', '分布式系统', '监控告警'] },
 ];
 ---
 
@@ -28,12 +58,15 @@ const skills = [
     <div id="hero-overlay" class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg pointer-events-none"></div>
     
     <div class="relative z-10 text-center px-6">
-      <p class="text-text-muted text-sm tracking-widest uppercase mb-4 animate-fade-in-up">Welcome</p>
+      <p class="text-text-muted text-sm tracking-widest uppercase mb-4 animate-fade-in-up">Backend Engineer @ Xiaohongshu</p>
       <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 animate-fade-in-up animation-delay-100">
-        你好，我是 <span class="text-accent">Ruixuan</span>
+        你好，我是 <span class="text-accent">王睿轩</span>
       </h1>
-      <p class="text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-8 animate-fade-in-up animation-delay-200">
-        全栈开发者 / 终身学习者 / 开源爱好者
+      <p class="text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-4 animate-fade-in-up animation-delay-200">
+        后端工程师 / 华中农业大学 / 沸点工作室负责人
+      </p>
+      <p class="text-base text-text-muted/70 max-w-xl mx-auto mb-8 animate-fade-in-up animation-delay-250">
+        专注于高并发架构设计与性能优化，在小米红书实习期间主导核心基础设施建设
       </p>
       <div class="flex items-center justify-center gap-4 animate-fade-in-up animation-delay-300">
         <a href="#projects" class="nav-link px-6 py-2.5 bg-accent text-white rounded-lg text-sm font-medium transition-all duration-200 ease-out hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/25 hover:-translate-y-0.5 active:translate-y-0">查看作品</a>
@@ -56,13 +89,16 @@ const skills = [
     
     <div class="mx-auto max-w-5xl relative z-10">
       <div class="section-animate opacity-0 translate-y-8">
-        <h2 class="text-4xl font-bold tracking-tight mb-2">作品集</h2>
-        <p class="text-text-muted mb-12">一些我参与或独立完成的项目。</p>
+        <h2 class="text-4xl font-bold tracking-tight mb-2">项目经历</h2>
+        <p class="text-text-muted mb-12">在小米红书实习及独立开发的项目，涵盖高并发架构、性能优化与AI应用。</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((project, i) => (
-          <a href={project.link} class="section-animate opacity-0 translate-y-8 group block rounded-xl border border-border bg-surface p-6 transition-all duration-300 ease-out hover:border-accent/40 hover:bg-surface-hover hover:shadow-lg hover:shadow-accent/5" style={`transition-delay: ${(i + 1) * 100}ms`}>
+          <a href={project.link} class="section-animate opacity-0 translate-y-8 group block rounded-xl border border-border bg-surface p-6 transition-all duration-300 ease-out hover:border-accent/40 hover:bg-surface-hover hover:shadow-lg hover:shadow-accent/5 relative overflow-hidden" style={`transition-delay: ${(i + 1) * 100}ms`}>
+            {project.highlight && (
+              <div class="absolute top-3 right-3 px-2 py-0.5 text-xs font-medium bg-accent/20 text-accent rounded-full">实习项目</div>
+            )}
             <div class="mb-4 flex items-center justify-between">
               <svg class="w-8 h-8 text-accent transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
@@ -90,8 +126,8 @@ const skills = [
     
     <div class="mx-auto max-w-3xl relative z-10">
       <div class="section-animate opacity-0 translate-y-8">
-        <h2 class="text-4xl font-bold tracking-tight mb-2">学习时间线</h2>
-        <p class="text-text-muted mb-16">我的成长路径与关键里程碑。</p>
+        <h2 class="text-4xl font-bold tracking-tight mb-2">成长历程</h2>
+        <p class="text-text-muted mb-16">从校园到职场的成长路径与关键里程碑。</p>
       </div>
 
       <div class="relative">
@@ -124,16 +160,17 @@ const skills = [
 
       <div class="space-y-12">
         <div class="section-animate opacity-0 translate-y-8 rounded-xl border border-border bg-surface p-8">
-          <p class="text-lg leading-relaxed mb-4">你好！我是一名全栈开发者，热爱用代码创造有价值的产品。</p>
-          <p class="text-text-muted leading-relaxed mb-4">我喜欢探索新技术，关注开发者体验和产品设计。目前专注于现代 Web 开发，同时也在学习系统设计和 AI 应用开发。</p>
-          <p class="text-text-muted leading-relaxed">工作之余，我喜欢阅读、写作技术博客，偶尔也会参与开源项目贡献。</p>
+          <p class="text-lg leading-relaxed mb-4">你好！我是王睿轩，华中农业大学计算机科学与技术专业本科生，目前在小米红书担任后端开发实习生。</p>
+          <p class="text-text-muted leading-relaxed mb-4">我专注于高并发架构设计与性能优化。在实习期间，我主导了慢SQL治理和全量SQL分析系统的设计与落地，通过多轮优化将系统性能提升 2-3 倍，支撑日均百万级数据处理。</p>
+          <p class="text-text-muted leading-relaxed mb-4">技术栈方面，我熟练掌握 Java、MySQL、Redis、Kafka 等后端技术，有丰富的大规模系统设计与落地经验。同时也在学习 Go 语言和云原生技术。</p>
+          <p class="text-text-muted leading-relaxed">工作之余，我担任沸点工作室总负责人，负责技术人才培养和项目对接，享受分享技术知识和帮助他人成长的过程。</p>
         </div>
 
         <div class="section-animate opacity-0 translate-y-8">
           <h3 class="text-2xl font-semibold mb-6">技术栈</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {skills.map((group) => (
-              <div class="rounded-xl border border-border bg-surface p-6">
+              <div class="rounded-xl border border-border bg-surface p-6 hover:border-accent/30 transition-colors">
                 <h4 class="text-sm font-medium text-accent mb-4">{group.category}</h4>
                 <ul class="space-y-2">
                   {group.items.map((item) => (<li class="text-sm text-text-muted flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent/50"></span>{item}</li>))}
@@ -144,16 +181,58 @@ const skills = [
         </div>
 
         <div class="section-animate opacity-0 translate-y-8">
+          <h3 class="text-2xl font-semibold mb-6">荣誉奖项</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex items-center gap-3 p-4 rounded-xl border border-border bg-surface">
+              <span class="text-2xl">🏆</span>
+              <div>
+                <p class="font-medium">中国计算机设计大赛</p>
+                <p class="text-sm text-text-muted">中南赛区一等奖</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-4 rounded-xl border border-border bg-surface">
+              <span class="text-2xl">🏆</span>
+              <div>
+                <p class="font-medium">华中农业大学计算机设计大赛</p>
+                <p class="text-sm text-text-muted">第十一届二等奖</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-4 rounded-xl border border-border bg-surface">
+              <span class="text-2xl">🏆</span>
+              <div>
+                <p class="font-medium">小红书 1024 AI Coding</p>
+                <p class="text-sm text-text-muted">二等奖</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-4 rounded-xl border border-border bg-surface">
+              <span class="text-2xl">📜</span>
+              <div>
+                <p class="font-medium">CET-4</p>
+                <p class="text-sm text-text-muted">大学英语四级</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-animate opacity-0 translate-y-8">
           <h3 class="text-2xl font-semibold mb-6">联系我</h3>
           <div class="flex flex-wrap gap-4">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-accent/30 hover:bg-surface-hover transition-all text-sm text-text-muted hover:text-text">
+            <a href="https://github.com/wangruixuan" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-accent/30 hover:bg-surface-hover transition-all text-sm text-text-muted hover:text-text">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
               GitHub
             </a>
-            <a href="mailto:wangruixuan@xiaohongshu.com" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-accent/30 hover:bg-surface-hover transition-all text-sm text-text-muted hover:text-text">
+            <a href="mailto:qq1729524191@163.com" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-accent/30 hover:bg-surface-hover transition-all text-sm text-text-muted hover:text-text">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
               Email
             </a>
+            <a href="tel:18004909721" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-accent/30 hover:bg-surface-hover transition-all text-sm text-text-muted hover:text-text">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              电话
+            </a>
+            <div class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-text-muted">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              微信: 18004909721
+            </div>
           </div>
         </div>
       </div>
