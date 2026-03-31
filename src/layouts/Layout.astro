@@ -4,7 +4,7 @@ interface Props {
 }
 
 import Oneko from '../components/Oneko.astro';
-import { navItems } from '../data/content';
+import { navItems, profile } from '../data/content';
 
 const { title } = Astro.props;
 const base = import.meta.env.BASE_URL;
@@ -35,7 +35,7 @@ const base = import.meta.env.BASE_URL;
     
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg/80 backdrop-blur-md">
       <div class="mx-auto max-w-5xl flex items-center justify-between px-6 h-16">
-        <a href={`${base}`} class="text-lg font-bold tracking-tight text-accent">Ruixuan</a>
+        <a href={`${base}`} class="text-lg font-bold tracking-tight text-accent">{profile.nameEn.split(' ')[0]}</a>
         <ul class="flex items-center gap-1">
           {navItems.map((item) => (
             <li>
