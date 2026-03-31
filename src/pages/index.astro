@@ -137,14 +137,14 @@ const skills = [
     </div>
     
     <div class="mx-auto max-w-5xl relative z-10">
-      <div class="section-animate opacity-0 translate-y-8">
+      <div class="section-title mb-12">
         <h2 class="text-4xl font-bold tracking-tight mb-2">项目经历</h2>
-        <p class="text-text-muted mb-12">过往实习经历及独立开发的项目，涵盖高并发架构、性能优化与AI应用。</p>
+        <p class="text-text-muted">过往实习经历及独立开发的项目，涵盖高并发架构、性能优化与AI应用。</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((project, i) => (
-          <button data-project-id={project.id} class="project-card section-animate opacity-0 translate-y-8 group block rounded-xl border border-border bg-surface p-6 transition-all duration-300 ease-out hover:border-accent/40 hover:bg-surface-hover hover:shadow-lg hover:shadow-accent/5 relative overflow-hidden text-left" style={`transition-delay: ${(i + 1) * 100}ms`}>
+          <button data-project-id={project.id} class="project-card section-animate group block rounded-xl border border-border bg-surface p-6 relative overflow-hidden text-left" style={`transition-delay: ${i * 100}ms`}>
             {project.highlight && (
               <div class="absolute top-3 right-3 px-2 py-0.5 text-xs font-medium bg-accent/20 text-accent rounded-full">实习项目</div>
             )}
@@ -193,16 +193,16 @@ const skills = [
     </div>
     
     <div class="mx-auto max-w-3xl relative z-10">
-      <div class="section-animate opacity-0 translate-y-8">
+      <div class="section-title mb-16">
         <h2 class="text-4xl font-bold tracking-tight mb-2">成长历程</h2>
-        <p class="text-text-muted mb-16">从校园到职场的成长路径与关键里程碑。</p>
+        <p class="text-text-muted">从校园到职场的成长路径与关键里程碑。</p>
       </div>
 
       <div class="relative">
         <div class="absolute left-6 top-0 bottom-0 w-px bg-border"></div>
         <div class="space-y-12">
           {milestones.map((m, i) => (
-            <div class="section-animate opacity-0 translate-x-[-20px] relative pl-16" style={`transition-delay: ${i * 150}ms`}>
+            <div class="slide-left relative pl-16" style={`transition-delay: ${i * 150}ms`}>
               <div class="absolute left-4 top-1 w-5 h-5 rounded-full border-2 border-accent bg-bg flex items-center justify-center text-xs">{m.icon}</div>
               <span class="text-xs font-mono text-accent tracking-wider">{m.date}</span>
               <h3 class="text-xl font-semibold mt-1 mb-2">{m.title}</h3>
@@ -221,13 +221,13 @@ const skills = [
     </div>
     
     <div class="mx-auto max-w-3xl relative z-10">
-      <div class="section-animate opacity-0 translate-y-8">
+      <div class="section-title mb-12">
         <h2 class="text-4xl font-bold tracking-tight mb-2">关于我</h2>
-        <p class="text-text-muted mb-12">了解更多关于我的信息。</p>
+        <p class="text-text-muted">了解更多关于我的信息。</p>
       </div>
 
       <div class="space-y-12">
-        <div class="section-animate opacity-0 translate-y-8 rounded-xl border border-border bg-surface p-8">
+        <div class="section-animate rounded-xl border border-border bg-surface p-8">
           <p class="text-lg leading-relaxed mb-4">你好！我是王睿轩，华中农业大学计算机科学与技术专业本科生，目前在小米红书担任后端开发实习生。</p>
           <p class="text-text-muted leading-relaxed mb-4">我专注于高并发架构设计与性能优化。在实习期间，我主导了慢SQL治理和全量SQL分析系统的设计与落地，通过多轮优化将系统性能提升 2-3 倍，支撑日均百万级数据处理。</p>
           <p class="text-text-muted leading-relaxed mb-4">技术栈方面，我熟练掌握 Java、MySQL、Redis、Kafka 等后端技术，有丰富的大规模系统设计与落地经验。同时也在学习 Go 语言和云原生技术。</p>
@@ -332,17 +332,17 @@ const skills = [
 
 <style>
   @keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
   }
   
   @keyframes slide-in-left {
-    from { opacity: 0; transform: translateX(-40px); }
+    from { opacity: 0; transform: translateX(-60px); }
     to { opacity: 1; transform: translateX(0); }
   }
   
   @keyframes scale-in {
-    from { opacity: 0; transform: scale(0.9); }
+    from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
   }
   
@@ -351,9 +351,9 @@ const skills = [
     50% { transform: translateY(-10px); }
   }
   
-  .animate-fade-in-up { animation: fade-in-up 0.6s ease-out forwards; }
-  .animate-slide-in-left { animation: slide-in-left 0.8s ease-out forwards; }
-  .animate-scale-in { animation: scale-in 0.6s ease-out forwards; }
+  .animate-fade-in-up { animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .animate-slide-in-left { animation: slide-in-left 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .animate-scale-in { animation: scale-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   .animate-float { animation: float 3s ease-in-out infinite; }
   
   .animation-delay-100 { animation-delay: 100ms; }
@@ -361,43 +361,84 @@ const skills = [
   .animation-delay-300 { animation-delay: 300ms; }
   
   .section-animate { 
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1); 
   }
+  
   .section-animate.visible { 
     opacity: 1 !important; 
-    transform: translateY(0) translateX(0) !important; 
+    transform: translateY(0) !important; 
+  }
+  
+  /* Slide in from left for timeline */
+  .slide-left {
+    opacity: 0;
+    transform: translateX(-60px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .slide-left.visible {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
   }
   
   html { scroll-behavior: smooth; }
   
-  /* Enhanced hero parallax */
-  #hero-canvas,
-  .hero-content,
+  /* Fixed Hero Section - GitHub Style */
+  #hero {
+    position: fixed;
+    top: 64px; /* nav height */
+    left: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: auto;
+  }
+  
+  /* Content sections on top */
+  #projects, #timeline, #about, footer {
+    position: relative;
+    z-index: 10;
+    background: var(--bg);
+  }
+  
+  /* Hero canvas parallax */
   .hero-parallax {
-    transform: translateZ(0);
-    will-change: transform, opacity;
-    transition: opacity 0.1s linear;
-  }
-  
-  /* Smooth section transitions */
-  section {
-    transform: translateZ(0);
-  }
-  
-  /* Enhanced parallax backgrounds */
-  .parallax-bg {
     will-change: transform;
   }
   
-  /* Project card hover glow effect */
-  .project-card:hover {
-    box-shadow: 0 0 30px rgba(129, 140, 248, 0.15);
+  /* Hero content fade on scroll */
+  .hero-content {
+    will-change: transform, opacity;
+    transition: opacity 0.3s, transform 0.3s;
   }
   
-  /* Timeline item animation enhancement */
-  #timeline .section-animate.visible {
-    animation: slide-in-left 0.6s ease-out forwards;
+  /* Project card hover effect */
+  .project-card {
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(129, 140, 248, 0.15), 
+                0 0 0 1px rgba(129, 140, 248, 0.1);
+  }
+  
+  /* Section titles slide from left */
+  .section-title {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .section-title.visible {
+    opacity: 1;
+    transform: translateX(0);
   }
 </style>
 
@@ -474,74 +515,54 @@ const skills = [
   draw();
   window.addEventListener('resize', () => { resize(); initParticles(); });
 
-  // Enhanced scroll-triggered animations with stagger
-  const observer = new IntersectionObserver((entries) => {
+  // Scroll-triggered animations
+  const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        // Add stagger delay based on index
-        const parent = entry.target.parentElement;
-        if (parent) {
-          const siblings = Array.from(parent.querySelectorAll('.section-animate'));
-          const index = siblings.indexOf(entry.target);
-          (entry.target as HTMLElement).style.transitionDelay = `${index * 100}ms`;
-        }
         entry.target.classList.add('visible');
       }
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  }, { threshold: 0.15, rootMargin: '0px 0px -100px 0px' });
 
-  document.querySelectorAll('.section-animate').forEach(el => observer.observe(el));
+  // Observe all animated elements
+  document.querySelectorAll('.section-animate, .section-title, .slide-left').forEach(el => {
+    sectionObserver.observe(el);
+  });
 
-  // Hero parallax effect
+  // Hero parallax effect - GitHub style
   const heroCanvas = document.getElementById('hero-canvas');
-  const heroOverlay = document.getElementById('hero-overlay');
   const heroContent = document.querySelector('.hero-content');
   const scrollIndicator = document.querySelector('.scroll-indicator');
+  
+  let ticking = false;
   
   function updateHeroParallax() {
     const scrollY = window.scrollY;
     const heroHeight = window.innerHeight;
-    const parallaxAmount = Math.min(scrollY / heroHeight, 1);
+    const progress = Math.min(scrollY / (heroHeight * 0.5), 1);
     
+    // Canvas floats up faster
     if (heroCanvas) {
-      (heroCanvas as HTMLElement).style.transform = `translateY(${scrollY * 0.3}px) scale(${1 + parallaxAmount * 0.1})`;
-      (heroCanvas as HTMLElement).style.opacity = `${1 - parallaxAmount * 0.5}`;
+      (heroCanvas as HTMLElement).style.transform = `translateY(${scrollY * 0.4}px)`;
     }
     
-    if (heroOverlay) {
-      (heroOverlay as HTMLElement).style.opacity = `${parallaxAmount * 0.3}`;
-    }
-    
+    // Content fades out and moves up
     if (heroContent) {
-      (heroContent as HTMLElement).style.transform = `translateY(${scrollY * 0.5}px)`;
-      (heroContent as HTMLElement).style.opacity = `${1 - parallaxAmount * 1.5}`;
+      (heroContent as HTMLElement).style.transform = `translateY(${scrollY * 0.3}px)`;
+      (heroContent as HTMLElement).style.opacity = `${1 - progress * 1.5}`;
     }
     
+    // Scroll indicator fades out quickly
     if (scrollIndicator) {
-      (scrollIndicator as HTMLElement).style.opacity = `${1 - parallaxAmount * 3}`;
+      (scrollIndicator as HTMLElement).style.opacity = `${1 - progress * 4}`;
     }
-  }
-
-  // Enhanced parallax backgrounds with smoother animation
-  const parallaxBgs = document.querySelectorAll('.parallax-bg');
-  let ticking = false;
-  
-  function updateParallax() {
-    const scrollY = window.scrollY;
     
-    parallaxBgs.forEach((bg, index) => {
-      const speed = 0.1 + (index * 0.05);
-      const yPos = scrollY * speed;
-      (bg as HTMLElement).style.transform = `translate3d(0, ${yPos}px, 0)`;
-    });
-    
-    updateHeroParallax();
     ticking = false;
   }
 
   window.addEventListener('scroll', () => {
     if (!ticking) {
-      requestAnimationFrame(updateParallax);
+      requestAnimationFrame(updateHeroParallax);
       ticking = true;
     }
   }, { passive: true });
