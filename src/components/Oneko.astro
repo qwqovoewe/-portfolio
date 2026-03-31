@@ -1,183 +1,76 @@
 ---
-// Oneko - Classic cat cursor follower (self-hosted)
+// Custom pixel cat - follows cursor
 ---
 
 <div id="oneko-container"></div>
 
 <script>
-(function oneko() {
-    const nekoEl = document.createElement("div");
-    let nekoPosX = window.innerWidth / 2;
-    let nekoPosY = window.innerHeight / 2;
-    let mousePosX = nekoPosX;
-    let mousePosY = nekoPosY;
-    let frameCount = 0;
-    let idleTime = 0;
-    let idleAnimation: string | null = null;
-    let idleAnimationFrame = 0;
-    const nekoSpeed = 10;
+(function cat() {
+    const catEl = document.createElement("div");
+    let catPosX = window.innerWidth / 2;
+    let catPosY = window.innerHeight / 2;
+    let mousePosX = catPosX;
+    let mousePosY = catPosY;
     
-    const spriteSets = {
-        idle: [[-3, -3]],
-        alert: [[-7, -3]],
-        scratch: [
-            [-5, 0],
-            [-6, 0],
-            [-7, 0],
-        ],
-        tired: [[-3, -2]],
-        sleeping: [
-            [-2, 0],
-            [-2, -1],
-        ],
-        N: [
-            [-1, -2],
-            [-1, -3],
-        ],
-        NE: [
-            [0, -2],
-            [0, -3],
-        ],
-        E: [
-            [-3, 0],
-            [-3, -1],
-        ],
-        SE: [
-            [-5, -1],
-            [-5, -2],
-        ],
-        S: [
-            [-6, -3],
-            [-7, -2],
-        ],
-        SW: [
-            [-5, -3],
-            [-6, -1],
-        ],
-        W: [
-            [-4, -2],
-            [-4, -3],
-        ],
-        NW: [
-            [-1, 0],
-            [-1, -1],
-        ],
-    };
+    const speed = 8;
+    const catWidth = 64;
+    const catHeight = 48;
 
     function create() {
-        nekoEl.id = "oneko";
-        nekoEl.style.width = "32px";
-        nekoEl.style.height = "32px";
-        nekoEl.style.position = "fixed";
-        nekoEl.style.pointerEvents = "none";
-        nekoEl.style.zIndex = "9999";
-        nekoEl.style.backgroundImage = "url('/portfolio/oneko.gif')";
-        nekoEl.style.imageRendering = "pixelated";
-        // Make orange cat yellow using CSS filters
-        nekoEl.style.filter = "hue-rotate(30deg) saturate(1.3)";
-        nekoEl.style.left = `${nekoPosX - 16}px`;
-        nekoEl.style.top = `${nekoPosY - 16}px`;
-
-        document.body.appendChild(nekoEl);
+        catEl.id = "custom-cat";
+        catEl.style.cssText = `
+            position: fixed;
+            width: ${catWidth}px;
+            height: ${catHeight}px;
+            pointer-events: none;
+            z-index: 9999;
+            background-image: url('/portfolio/orange-cat.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            image-rendering: pixelated;
+            left: ${catPosX - catWidth/2}px;
+            top: ${catPosY - catHeight/2}px;
+            transition: transform 0.1s ease-out;
+        `;
+        document.body.appendChild(catEl);
 
         document.addEventListener("mousemove", (event) => {
             mousePosX = event.clientX;
             mousePosY = event.clientY;
         });
 
-        // Double click to teleport cat
+        // Double click to teleport
         document.addEventListener("dblclick", (event) => {
-            nekoPosX = event.clientX;
-            nekoPosY = event.clientY;
-            nekoEl.style.left = `${nekoPosX - 16}px`;
-            nekoEl.style.top = `${nekoPosY - 16}px`;
+            catPosX = event.clientX;
+            catPosY = event.clientY;
+            catEl.style.left = `${catPosX - catWidth/2}px`;
+            catEl.style.top = `${catPosY - catHeight/2}px`;
         });
 
-        setInterval(frame, 100);
-    }
-
-    function setSprite(name: string, frame: number) {
-        const sprite = spriteSets[name as keyof typeof spriteSets][frame % spriteSets[name as keyof typeof spriteSets].length];
-        nekoEl.style.backgroundPosition = `${sprite[0] * 32}px ${sprite[1] * 32}px`;
-    }
-
-    function resetIdleAnimation() {
-        idleAnimation = null;
-        idleAnimationFrame = 0;
-    }
-
-    function idle() {
-        idleTime += 1;
-
-        // every ~ 20 seconds
-        if (
-            idleTime > 10 &&
-            Math.floor(Math.random() * 200) == 0 &&
-            idleAnimation == null
-        ) {
-            idleAnimation = ["sleeping", "scratch"][
-                Math.floor(Math.random() * 2)
-            ];
-        }
-
-        switch (idleAnimation) {
-            case "sleeping":
-                if (idleAnimationFrame < 8) {
-                    setSprite("tired", 0);
-                    break;
-                }
-                setSprite("sleeping", Math.floor(idleAnimationFrame / 4));
-                if (idleAnimationFrame > 192) {
-                    resetIdleAnimation();
-                }
-                break;
-            case "scratch":
-                setSprite("scratch", idleAnimationFrame);
-                if (idleAnimationFrame > 9) {
-                    resetIdleAnimation();
-                }
-                break;
-            default:
-                setSprite("idle", 0);
-                return;
-        }
-        idleAnimationFrame += 1;
+        setInterval(frame, 16); // ~60fps
     }
 
     function frame() {
-        frameCount += 1;
-        const diffX = nekoPosX - mousePosX;
-        const diffY = nekoPosY - mousePosY;
+        const diffX = catPosX - mousePosX;
+        const diffY = catPosY - mousePosY;
         const distance = Math.sqrt(diffX ** 2 + diffY ** 2);
 
-        if (distance < nekoSpeed || distance < 48) {
-            idle();
-            return;
-        }
+        if (distance < 5) return; // Close enough
 
-        idleAnimation = null;
-        idleAnimationFrame = 0;
+        // Move towards mouse
+        catPosX -= (diffX / distance) * speed;
+        catPosY -= (diffY / distance) * speed;
 
-        if (idleTime > 1) {
-            setSprite("alert", 0);
-            // count down after being alerted before moving
-            idleTime = Math.min(idleTime, 7);
-            idleTime -= 1;
-            return;
-        }
+        // Keep in bounds
+        catPosX = Math.min(Math.max(catWidth/2, catPosX), window.innerWidth - catWidth/2);
+        catPosY = Math.min(Math.max(catHeight/2, catPosY), window.innerHeight - catHeight/2);
 
-        let direction = diffY / distance > 0.5 ? "N" : "";
-        direction += diffY / distance < -0.5 ? "S" : "";
-        direction += diffX / distance > 0.5 ? "W" : "";
-        direction += diffX / distance < -0.5 ? "E" : "";
-        
-        setSprite(direction, frameCount);
+        // Flip cat based on direction
+        const scaleX = diffX > 0 ? 1 : -1;
+        catEl.style.transform = `scaleX(${scaleX})`;
 
-        nekoPosX -= (diffX / distance) * nekoSpeed;
-        nekoPosY -= (diffY / distance) * nekoSpeed;
-
-        nekoEl.style.left = `${nekoPosX - 16}px`;
-        nekoEl.style.top = `${nekoPosY - 16}px`;
+        catEl.style.left = `${catPosX - catWidth/2}px`;
+        catEl.style.top = `${catPosY - catHeight/2}px`;
     }
 
     create();
