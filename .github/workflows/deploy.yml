@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       # 使用 npm cache 缓存 node_modules
       - name: Cache node_modules
