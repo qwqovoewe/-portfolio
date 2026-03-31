@@ -25,20 +25,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      # 使用 npm cache 缓存 node_modules
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        id: cache-npm
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          cache: 'npm'
 
       - name: Install dependencies
-        if: steps.cache-npm.outputs.cache-hit != 'true'
-        run: npm ci --prefer-offline --no-audit
+        run: npm ci --prefer-offline --no-audit --progress=false
 
       - name: Build
         run: npm run build
