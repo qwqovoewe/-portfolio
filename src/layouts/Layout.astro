@@ -25,14 +25,14 @@ const navItems = [
   </head>
   <body class="min-h-screen flex flex-col">
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg/80 backdrop-blur-md">
-      <a href={`${base}`} class="absolute left-4 top-0 bottom-0 flex items-center text-lg font-bold tracking-tight text-accent">Ruixuan</a>
-      <div class="mx-auto max-w-5xl flex items-center justify-center px-6 h-16">
+      <div class="mx-auto max-w-5xl flex items-center justify-between px-6 h-16">
+        <a href={`${base}`} class="text-lg font-bold tracking-tight text-accent">Ruixuan</a>
         <ul class="flex items-center gap-1">
           {navItems.map((item) => (
             <li>
               <a
                 href={item.href}
-                class="nav-link px-3 py-1.5 rounded-md text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-colors"
+                class="nav-link px-3 py-1.5 rounded-md text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
               >
                 {item.name}
               </a>

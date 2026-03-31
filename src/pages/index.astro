@@ -36,8 +36,8 @@ const skills = [
         全栈开发者 / 终身学习者 / 开源爱好者
       </p>
       <div class="flex items-center justify-center gap-4 animate-fade-in-up animation-delay-300">
-        <a href="#projects" class="nav-link px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-lg text-sm font-medium transition-colors">查看作品</a>
-        <a href="#about" class="nav-link px-6 py-2.5 border border-border hover:border-accent/50 rounded-lg text-sm font-medium transition-colors text-text-muted hover:text-text">了解更多</a>
+        <a href="#projects" class="nav-link px-6 py-2.5 bg-accent text-white rounded-lg text-sm font-medium transition-all duration-200 ease-out hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/25 hover:-translate-y-0.5 active:translate-y-0">查看作品</a>
+        <a href="#about" class="nav-link px-6 py-2.5 border border-border rounded-lg text-sm font-medium transition-all duration-200 ease-out text-text-muted hover:text-text hover:border-accent/50 hover:bg-surface-hover hover:-translate-y-0.5 active:translate-y-0">了解更多</a>
       </div>
     </div>
     
@@ -62,19 +62,19 @@ const skills = [
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project, i) => (
-          <a href={project.link} class="section-animate opacity-0 translate-y-8 group block rounded-xl border border-border bg-surface p-6 transition-all hover:border-accent/30 hover:bg-surface-hover hover:-translate-y-1" style={`transition-delay: ${(i + 1) * 100}ms`}>
+          <a href={project.link} class="section-animate opacity-0 translate-y-8 group block rounded-xl border border-border bg-surface p-6 transition-all duration-300 ease-out hover:border-accent/40 hover:bg-surface-hover hover:shadow-lg hover:shadow-accent/5" style={`transition-delay: ${(i + 1) * 100}ms`}>
             <div class="mb-4 flex items-center justify-between">
-              <svg class="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-8 h-8 text-accent transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
               </svg>
-              <svg class="w-5 h-5 text-text-muted opacity-0 transition-opacity group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 text-text-muted opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 17L17 7M17 7H7M17 7v10" />
               </svg>
             </div>
-            <h3 class="text-lg font-semibold mb-2 group-hover:text-accent transition-colors">{project.title}</h3>
+            <h3 class="text-lg font-semibold mb-2 transition-colors duration-300 group-hover:text-accent">{project.title}</h3>
             <p class="text-sm text-text-muted mb-4 leading-relaxed">{project.description}</p>
             <div class="flex flex-wrap gap-2">
-              {project.tags.map((tag) => (<span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">{tag}</span>))}
+              {project.tags.map((tag) => (<span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent transition-colors duration-300 group-hover:bg-accent/20">{tag}</span>))}
             </div>
           </a>
         ))}
