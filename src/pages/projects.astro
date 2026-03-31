@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const projects = [
+  {
+    title: '个人博客系统',
+    description: '基于 Astro 构建的静态博客，支持 Markdown 写作、暗色主题和全文搜索。',
+    tags: ['Astro', 'TypeScript', 'Tailwind CSS'],
+    link: '#',
+  },
+  {
+    title: '任务管理应用',
+    description: '全栈任务管理工具，支持看板视图、拖拽排序和团队协作功能。',
+    tags: ['React', 'Node.js', 'PostgreSQL'],
+    link: '#',
+  },
+  {
+    title: '天气数据可视化',
+    description: '实时天气数据可视化面板，集成多个气象 API，支持历史数据对比分析。',
+    tags: ['Vue.js', 'D3.js', 'Python'],
+    link: '#',
+  },
+];
+---
+
+<Layout title="作品集 | Portfolio">
+  <section class="mx-auto max-w-5xl px-6 py-20">
+    <h1 class="text-4xl font-bold tracking-tight mb-2">作品集</h1>
+    <p class="text-text-muted mb-12">一些我参与或独立完成的项目。</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {projects.map((project) => (
+        <a
+          href={project.link}
+          class="group block rounded-xl border border-border bg-surface p-6 transition-all hover:border-accent/30 hover:bg-surface-hover hover:-translate-y-0.5"
+        >
+          <div class="mb-4 flex items-center justify-between">
+            <svg class="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+            <svg class="w-5 h-5 text-text-muted opacity-0 transition-opacity group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 17L17 7M17 7H7M17 7v10" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2 group-hover:text-accent transition-colors">{project.title}</h3>
+          <p class="text-sm text-text-muted mb-4 leading-relaxed">{project.description}</p>
+          <div class="flex flex-wrap gap-2">
+            {project.tags.map((tag) => (
+              <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>

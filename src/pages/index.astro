@@ -1,0 +1,142 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="首页 | Portfolio">
+  <section class="relative flex items-center justify-center min-h-[calc(100vh-4rem)] overflow-hidden">
+    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full"></canvas>
+    <div class="relative z-10 text-center px-6">
+      <p class="text-text-muted text-sm tracking-widest uppercase mb-4">Welcome</p>
+      <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+        你好，我是 <span class="text-accent">Ruixuan</span>
+      </h1>
+      <p class="text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-8">
+        全栈开发者 / 终身学习者 / 开源爱好者
+      </p>
+      <div class="flex items-center justify-center gap-4">
+        <a href={`${import.meta.env.BASE_URL}projects/`} class="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-lg text-sm font-medium transition-colors">
+          查看作品
+        </a>
+        <a href={`${import.meta.env.BASE_URL}about/`} class="px-6 py-2.5 border border-border hover:border-accent/50 rounded-lg text-sm font-medium transition-colors text-text-muted hover:text-text">
+          了解更多
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext';
+
+  const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+  let dpr = window.devicePixelRatio || 1;
+  let width = 0;
+  let height = 0;
+  let animFrame: number;
+  let time = 0;
+
+  const phrases = [
+    'Code',
+    'Design',
+    'Create',
+    'Build',
+    'Ship',
+    'Learn',
+    'Explore',
+    'Dream',
+    '构建',
+    '创造',
+    '探索',
+  ];
+
+  interface FloatingText {
+    text: string;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    fontSize: number;
+    opacity: number;
+  }
+
+  const particles: FloatingText[] = [];
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function initParticles() {
+    particles.length = 0;
+    const count = Math.min(Math.floor((width * height) / 40000), 20);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        text: phrases[Math.floor(Math.random() * phrases.length)],
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        fontSize: 12 + Math.random() * 16,
+        opacity: 0.03 + Math.random() * 0.07,
+      });
+    }
+  }
+
+  function draw() {
+    time += 0.005;
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw floating text particles using pretext for measurement
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -100) p.x = width + 100;
+      if (p.x > width + 100) p.x = -100;
+      if (p.y < -50) p.y = height + 50;
+      if (p.y > height + 50) p.y = -50;
+
+      const font = `${Math.round(p.fontSize)}px "Inter", system-ui, sans-serif`;
+      const prepared = prepareWithSegments(p.text, font);
+      const { lines } = layoutWithLines(prepared, 400, p.fontSize * 1.4);
+
+      const wave = Math.sin(time + p.x * 0.01) * 0.02;
+      ctx.globalAlpha = p.opacity + wave;
+      ctx.font = font;
+      ctx.fillStyle = '#818cf8';
+
+      for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i].text, p.x, p.y + i * p.fontSize * 1.4);
+      }
+    }
+
+    // Draw grid dots
+    ctx.globalAlpha = 0.04;
+    ctx.fillStyle = '#818cf8';
+    const spacing = 40;
+    for (let x = 0; x < width; x += spacing) {
+      for (let y = 0; y < height; y += spacing) {
+        const offset = Math.sin(time * 2 + x * 0.02 + y * 0.02) * 1;
+        ctx.beginPath();
+        ctx.arc(x + offset, y + offset, 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    ctx.globalAlpha = 1;
+    animFrame = requestAnimationFrame(draw);
+  }
+
+  resize();
+  initParticles();
+  draw();
+
+  window.addEventListener('resize', () => {
+    resize();
+    initParticles();
+  });
+</script>

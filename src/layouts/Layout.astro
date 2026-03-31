@@ -1,0 +1,67 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const navItems = [
+  { name: '首页', href: base },
+  { name: '作品集', href: `${base}projects/` },
+  { name: '时间线', href: `${base}timeline/` },
+  { name: '博客', href: `${base}blog/` },
+  { name: '关于', href: `${base}about/` },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <nav class="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg/80 backdrop-blur-md">
+      <div class="mx-auto max-w-5xl flex items-center justify-between px-6 h-16">
+        <a href={base} class="text-lg font-bold tracking-tight text-accent">Portfolio</a>
+        <ul class="flex items-center gap-1">
+          {navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  'px-3 py-1.5 rounded-md text-sm transition-colors',
+                  currentPath === item.href || (item.href !== base && currentPath.startsWith(item.href))
+                    ? 'text-accent bg-accent/10'
+                    : 'text-text-muted hover:text-text hover:bg-surface-hover',
+                ]}
+              >
+                {item.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+
+    <main class="flex-1 pt-16">
+      <slot />
+    </main>
+
+    <footer class="border-t border-border py-8 text-center text-sm text-text-muted">
+      <div class="mx-auto max-w-5xl px-6">
+        &copy; {new Date().getFullYear()} Portfolio. Built with Astro.
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>

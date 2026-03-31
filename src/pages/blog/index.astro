@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const posts = [
+  {
+    title: '用 Astro 构建现代静态站点',
+    description: '探索 Astro 的 Islands 架构，如何在保持极致性能的同时实现丰富的交互体验。',
+    date: '2026-03-20',
+    tags: ['Astro', '前端'],
+    readTime: '5 min',
+  },
+  {
+    title: 'TypeScript 类型体操入门',
+    description: '从实际场景出发，学习 TypeScript 高级类型技巧，让类型系统成为你的开发助手。',
+    date: '2026-03-10',
+    tags: ['TypeScript', '教程'],
+    readTime: '8 min',
+  },
+];
+---
+
+<Layout title="博客 | Portfolio">
+  <section class="mx-auto max-w-3xl px-6 py-20">
+    <h1 class="text-4xl font-bold tracking-tight mb-2">博客</h1>
+    <p class="text-text-muted mb-12">记录学习心得与技术探索。</p>
+
+    <div class="space-y-6">
+      {posts.map((post) => (
+        <article class="group rounded-xl border border-border bg-surface p-6 transition-all hover:border-accent/30 hover:bg-surface-hover">
+          <div class="flex items-center gap-3 text-xs text-text-muted mb-3">
+            <time>{post.date}</time>
+            <span class="w-1 h-1 rounded-full bg-border"></span>
+            <span>{post.readTime}</span>
+          </div>
+          <h2 class="text-xl font-semibold mb-2 group-hover:text-accent transition-colors">
+            {post.title}
+          </h2>
+          <p class="text-text-muted leading-relaxed mb-4">{post.description}</p>
+          <div class="flex flex-wrap gap-2">
+            {post.tags.map((tag) => (
+              <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Layout>
