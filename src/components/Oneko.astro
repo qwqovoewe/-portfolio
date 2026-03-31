@@ -5,8 +5,9 @@
 <div id="neko-container"></div>
 
 <script>
-const NEKO_WIDTH = 32;
-const NEKO_HEIGHT = 32;
+const NEKO_WIDTH = 38;
+const NEKO_HEIGHT = 38;
+const SPRITE_SIZE = 32; // Original sprite size
 const NEKO_SPEED = 15;
 const FRAME_RATE = 100;
 const ALERT_TIME = 3;
@@ -122,6 +123,12 @@ class Neko {
     this.nekoElement = document.createElement("div");
     this.nekoElement.id = "oneko";
     this.nekoElement.ariaHidden = "true";
+    
+    // Calculate scale factor
+    const scale = NEKO_WIDTH / SPRITE_SIZE;
+    const originalSpriteWidth = 264; // Original sprite sheet width
+    const originalSpriteHeight = 198; // Original sprite sheet height
+    
     this.nekoElement.style.cssText = `
       width: ${NEKO_WIDTH}px;
       height: ${NEKO_HEIGHT}px;
@@ -132,6 +139,7 @@ class Neko {
       cursor: grab;
       left: ${this.posX - NEKO_WIDTH/2}px;
       top: ${this.posY - NEKO_HEIGHT/2}px;
+      background-size: ${originalSpriteWidth * scale}px ${originalSpriteHeight * scale}px;
     `;
 
     try {
@@ -151,8 +159,9 @@ class Neko {
     if (!spriteSet) return;
     const sprite = spriteSet[frame % spriteSet.length];
     if (sprite) {
-      const posX = sprite[0] * (NEKO_WIDTH + SPRITE_GAP);
-      const posY = sprite[1] * (NEKO_HEIGHT + SPRITE_GAP);
+      const scale = NEKO_WIDTH / SPRITE_SIZE;
+      const posX = sprite[0] * (SPRITE_SIZE + SPRITE_GAP) * scale;
+      const posY = sprite[1] * (SPRITE_SIZE + SPRITE_GAP) * scale;
       this.nekoElement.style.backgroundPosition = `-${posX}px -${posY}px`;
     }
   }
