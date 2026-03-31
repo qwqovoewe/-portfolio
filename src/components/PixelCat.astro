@@ -31,7 +31,7 @@
   };
 
   // State
-  let state: 'idle' | 'walk' | 'sleep' | 'yawn' | 'play' = 'idle';
+  let state: 'idle' | 'walk' | 'run' | 'sleep' | 'yawn' | 'play' | 'sit' = 'idle';
   let x = window.innerWidth / 2;
   let y = window.innerHeight / 2;
   let targetX = x;
@@ -49,6 +49,13 @@
   
   // Butterfly
   let butterfly: { x: number; y: number; angle: number } | null = null;
+  
+  // Exploration - cat roams around
+  let exploreTarget: { x: number; y: number } | null = null;
+  let exploreTimer = 0;
+  
+  // Click to summon
+  let summonTarget: { x: number; y: number } | null = null;
 
   function drawPixel(px: number, py: number, color: string) {
     ctx.fillStyle = color;
@@ -58,12 +65,15 @@
   function drawCat() {
     ctx.clearRect(0, 0, 64, 64);
     
-    const bounce = Math.sin(frame * 0.1) * (state === 'walk' ? 2 : 0.5);
-    const breathe = Math.sin(frame * 0.05) * 0.5;
-    const tailWag = Math.sin(frame * 0.15) * 2;
+    const bounce = Math.sin(frame * 0.1) * (state === 'walk' ? 2 : state === 'run' ? 4 : 0.5);
+    const breathe = Math.sin(frame * 0.05) * (state === 'run' ? 0 : 0.5);
+    const tailWag = Math.sin(frame * 0.15) * (state === 'run' ? 4 : 2);
     
-    // Walking animation offset
-    const walkOffset = state === 'walk' ? Math.sin(frame * 0.3) * 2 : 0;
+    // Walking/running animation offset
+    const walkOffset = state === 'walk' ? Math.sin(frame * 0.3) * 2 : state === 'run' ? Math.sin(frame * 0.5) * 3 : 0;
+    
+    // Sit animation (cat sits down)
+    const sitSquash = state === 'sit' ? 2 : 0;
     
     // Sleep squint
     const eyeOpen = state === 'sleep' ? 0 : (state === 'yawn' ? 0.3 : 1);
@@ -71,7 +81,7 @@
     
     // Base position
     const bx = 8;
-    const by = 20 - bounce + breathe;
+    const by = 20 - bounce + breathe + sitSquash;
     
     // === BODY ===
     // Main body (chubby)
@@ -216,62 +226,117 @@
 
   function updateState() {
     const distToMouse = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
+    const distToTarget = Math.sqrt((targetX - x) ** 2 + (targetY - y) ** 2);
     
     // State transitions
     sleepTimer++;
+    exploreTimer++;
     
-    // Get sleepy after 15 seconds of no interaction
-    if (sleepTimer > 900 && state === 'idle') {
-      state = 'sleep';
-      sleepiness = 0;
+    // Summoned by click - run to target
+    if (summonTarget) {
+      const distToSummon = Math.sqrt((summonTarget.x - x) ** 2 + (summonTarget.y - y) ** 2);
+      if (distToSummon > 30) {
+        state = 'run';
+        targetX = summonTarget.x;
+        targetY = summonTarget.y;
+      } else {
+        summonTarget = null;
+        state = 'sit';
+        setTimeout(() => { if (state === 'sit') state = 'idle'; }, 2000);
+      }
+      return;
     }
     
-    // Wake up on mouse move
-    if (distToMouse > 100) {
-      sleepTimer = 0;
+    // Get sleepy after 20 seconds of no interaction
+    if (sleepTimer > 1200 && state === 'idle') {
+      state = 'sleep';
+      sleepiness = 0;
+      return;
+    }
+    
+    // Wake up on mouse interaction
+    if (distToMouse < 150 || sleepTimer === 0) {
       if (state === 'sleep') {
         state = 'yawn';
         setTimeout(() => { if (state === 'yawn') state = 'idle'; }, 1000);
+        return;
       }
+    }
+    
+    // Random exploration - cat wanders around
+    if (!exploreTarget && exploreTimer > 300 && Math.random() < 0.01 && state === 'idle') {
+      exploreTarget = {
+        x: 100 + Math.random() * (window.innerWidth - 200),
+        y: 150 + Math.random() * (window.innerHeight - 300)
+      };
+      state = 'walk';
     }
     
     // Chase butterfly occasionally
     if (state === 'idle' && Math.random() < 0.002) {
       state = 'play';
       butterfly = {
-        x: x / 4 + (Math.random() - 0.5) * 20,
-        y: y / 4 - 10,
+        x: x / 4 + (Math.random() - 0.5) * 30,
+        y: y / 4 - 15,
         angle: 0
       };
+      exploreTimer = 0;
+      return;
+    }
+    
+    // Update explore target
+    if (exploreTarget && state === 'walk') {
+      targetX = exploreTarget.x;
+      targetY = exploreTarget.y;
+      
+      if (distToTarget < 40) {
+        exploreTarget = null;
+        exploreTimer = 0;
+        state = Math.random() > 0.5 ? 'sit' : 'idle';
+        if (state === 'sit') setTimeout(() => { if (state === 'sit') state = 'idle'; }, 3000);
+      }
     }
     
     // Stop playing
-    if (state === 'play' && (!butterfly || frame % 300 === 0)) {
+    if (state === 'play' && (!butterfly || frame % 400 === 0)) {
       state = 'idle';
       butterfly = null;
+      exploreTimer = 0;
     }
     
-    // Walking
-    if (distToMouse > 150 && state !== 'sleep' && state !== 'play') {
-      state = 'walk';
-    } else if (state === 'walk' && distToMouse < 100) {
-      state = 'idle';
+    // Follow mouse when close
+    if (!exploreTarget && !summonTarget && state !== 'sleep' && state !== 'play') {
+      if (distToMouse > 200) {
+        state = 'walk';
+        targetX = mouseX;
+        targetY = mouseY;
+      } else if (state === 'walk' && distToMouse < 80) {
+        state = 'idle';
+      }
     }
     
     // Update facing direction
-    if (mouseX > x + 20) facingRight = true;
-    else if (mouseX < x - 20) facingRight = false;
+    if (targetX > x + 10) facingRight = true;
+    else if (targetX < x - 10) facingRight = false;
   }
 
   function animate() {
     frame++;
     
-    // Update position
+    // Update position with different speeds
     const dx = targetX - x;
     const dy = targetY - y;
-    const speed = state === 'walk' ? 0.05 : 0.08;
+    let speed = 0.03;
+    if (state === 'run') speed = 0.12;
+    else if (state === 'walk') speed = 0.06;
+    else if (state === 'play') speed = 0.08;
+    
     x += dx * speed;
     y += dy * speed;
+    
+    // Keep in bounds
+    x = Math.max(50, Math.min(window.innerWidth - 50, x));
+    y = Math.max(100, Math.min(window.innerHeight - 100, y));
     
     canvas.style.left = `${x - 32}px`;
     canvas.style.top = `${y - 32}px`;
@@ -304,29 +369,33 @@
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    
-    // Cat follows mouse loosely
-    targetX = window.innerWidth / 2 + (mouseX - window.innerWidth / 2) * 0.3;
-    targetY = window.innerHeight / 2 + (mouseY - window.innerHeight / 2) * 0.2;
-    
     sleepTimer = 0;
   });
 
-  // Interactions
-  document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      sleepTimer = 0;
-      if (state === 'sleep') state = 'yawn';
-      setTimeout(() => { if (state === 'yawn') state = 'idle'; }, 800);
-    });
-  });
-
-  document.addEventListener('click', () => {
+  // Double click to summon cat
+  document.addEventListener('dblclick', (e) => {
+    summonTarget = { x: e.clientX, y: e.clientY };
     sleepTimer = 0;
     if (state === 'sleep') {
       state = 'yawn';
-      setTimeout(() => { state = 'idle'; }, 800);
+      setTimeout(() => { state = 'run'; }, 500);
     }
+  });
+
+  // Single click to pet (stops exploring)
+  document.addEventListener('click', (e) => {
+    sleepTimer = 0;
+    exploreTarget = null;
+    if (state === 'sleep') {
+      state = 'yawn';
+      setTimeout(() => { if (state === 'yawn') state = 'idle'; }, 800);
+    }
+  });
+
+  // Scroll makes cat react
+  document.addEventListener('scroll', () => {
+    sleepTimer = 0;
+    exploreTimer = Math.max(0, exploreTimer - 100);
   });
 
   animate();
