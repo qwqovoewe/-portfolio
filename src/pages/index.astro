@@ -94,12 +94,79 @@ const milestones = [
 ];
 
 const skills = [
-  { category: 'Java/Go', items: ['Java基础', 'JVM调优', 'JUC并发', 'Go pprof'] },
-  { category: '数据库', items: ['MySQL', 'Redis', 'ClickHouse', 'Kafka'] },
-  { category: '框架', items: ['Spring Boot', 'Spring Security', 'MyBatis', 'gRPC'] },
-  { category: '中间件', items: ['Kafka', 'Canal', 'Elasticsearch', 'WebSocket'] },
-  { category: '设计模式', items: ['单例', '工厂', '策略', '责任链', '模板方法'] },
-  { category: '工程实践', items: ['性能优化', '高并发架构', '分布式系统', '监控告警'] },
+  { 
+    id: 'java-go',
+    category: 'Java/Go', 
+    items: ['Java基础', 'JVM调优', 'JUC并发', 'Go pprof'],
+    description: '熟练掌握 Java 核心技术栈，包括集合框架、并发编程、JVM 调优等。了解 Go 语言并发模型。',
+    details: [
+      { title: 'Java 基础', content: '熟练掌握面向对象编程、反射机制、异常处理、IO/NIO、泛型等核心特性' },
+      { title: 'JVM 调优', content: '熟悉内存结构（堆、栈、方法区）、垃圾回收算法、GC 日志分析、性能调优实践' },
+      { title: 'JUC 并发', content: '深入理解 CAS、AQS、线程池原理、锁机制、并发容器、ThreadLocal 等' },
+      { title: 'Go pprof', content: '了解 Go 并发模型，掌握 pprof 性能分析工具，有实际服务调优经验' },
+    ]
+  },
+  { 
+    id: 'database',
+    category: '数据库', 
+    items: ['MySQL', 'Redis', 'ClickHouse', 'Kafka'],
+    description: '精通关系型数据库与 NoSQL，熟悉分布式存储与消息队列。',
+    details: [
+      { title: 'MySQL', content: '熟悉事务原理、锁机制、MVCC、索引优化、慢 SQL 分析、主从复制' },
+      { title: 'Redis', content: '熟练使用各种数据结构，了解持久化、哨兵、集群、缓存穿透/雪崩解决方案' },
+      { title: 'ClickHouse', content: '有实际使用经验，了解列式存储、聚合查询优化、分区策略' },
+      { title: 'Kafka', content: '熟悉消息队列模型、分区副本、消费者组、高吞吐读写实践' },
+    ]
+  },
+  { 
+    id: 'frameworks',
+    category: '框架', 
+    items: ['Spring Boot', 'Spring Security', 'MyBatis', 'gRPC'],
+    description: '熟练使用主流 Java 框架，理解核心原理与最佳实践。',
+    details: [
+      { title: 'Spring Boot', content: '熟练使用 IOC、AOP、自动配置，理解 Bean 生命周期、循环依赖解决机制' },
+      { title: 'Spring Security', content: '掌握认证授权流程、JWT、OAuth2、权限控制实现' },
+      { title: 'MyBatis', content: '熟悉动态 SQL、缓存机制、插件扩展、批量操作优化' },
+      { title: 'gRPC', content: '了解 RPC 框架、Protocol Buffers、服务治理' },
+    ]
+  },
+  { 
+    id: 'middleware',
+    category: '中间件', 
+    items: ['Kafka', 'Canal', 'Elasticsearch', 'WebSocket'],
+    description: '有丰富中间件使用经验，参与过大规模系统架构设计。',
+    details: [
+      { title: 'Kafka', content: '高吞吐消息队列实践，消费者组管理、消息可靠性保障' },
+      { title: 'Canal', content: 'MySQL binlog 解析、数据同步、缓存一致性保障' },
+      { title: 'Elasticsearch', content: '全文检索、聚合查询、索引设计、性能优化' },
+      { title: 'WebSocket', content: '实时通信、流式输出、长连接管理' },
+    ]
+  },
+  { 
+    id: 'design-patterns',
+    category: '设计模式', 
+    items: ['单例', '工厂', '策略', '责任链', '模板方法'],
+    description: '熟悉常见设计模式，在实际项目中灵活运用。',
+    details: [
+      { title: '单例模式', content: '双重检查锁、枚举实现、应用场景' },
+      { title: '工厂模式', content: '简单工厂、工厂方法、抽象工厂' },
+      { title: '策略模式', content: '算法族封装、运行时切换、消除条件语句' },
+      { title: '责任链模式', content: '请求处理链、拦截器、过滤器' },
+      { title: '模板方法', content: '算法骨架、扩展点设计、代码复用' },
+    ]
+  },
+  { 
+    id: 'engineering',
+    category: '工程实践', 
+    items: ['性能优化', '高并发架构', '分布式系统', '监控告警'],
+    description: '有大流量系统设计与优化经验，注重工程质量与可观测性。',
+    details: [
+      { title: '性能优化', content: '系统瓶颈分析、JVM 调优、数据库优化、缓存策略' },
+      { title: '高并发架构', content: '限流、降级、熔断、异步处理、读写分离' },
+      { title: '分布式系统', content: '分布式事务、一致性保障、服务拆分、CAP 权衡' },
+      { title: '监控告警', content: 'Prometheus、Grafana、链路追踪、日志分析' },
+    ]
+  },
 ];
 ---
 
@@ -186,6 +253,25 @@ const skills = [
     </div>
   </div>
 
+  <!-- Skill Modal -->
+  <div id="skill-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-bg/80 backdrop-blur-sm" id="skill-modal-backdrop"></div>
+    <div class="absolute inset-4 md:inset-8 lg:inset-16 overflow-y-auto">
+      <div class="min-h-full flex items-start justify-center py-8">
+        <div id="skill-modal-content" class="relative w-full max-w-2xl bg-surface border border-border rounded-2xl shadow-2xl opacity-0 transform scale-95 transition-all duration-300">
+          <button id="skill-modal-close" class="absolute top-4 right-4 p-2 rounded-lg hover:bg-surface-hover transition-colors text-text-muted hover:text-text">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <div id="skill-modal-body" class="p-8">
+            <!-- Content will be injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Timeline Section -->
   <section id="timeline" class="min-h-screen py-32 px-6 relative bg-surface/50">
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -234,16 +320,21 @@ const skills = [
           <p class="text-text-muted leading-relaxed">工作之余，我担任沸点工作室总负责人，负责技术人才培养和项目对接，享受分享技术知识和帮助他人成长的过程。</p>
         </div>
 
-        <div class="section-animate opacity-0 translate-y-8">
+        <div class="section-animate">
           <h3 class="text-2xl font-semibold mb-6">技术栈</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {skills.map((group) => (
-              <div class="rounded-xl border border-border bg-surface p-6 hover:border-accent/30 transition-colors">
-                <h4 class="text-sm font-medium text-accent mb-4">{group.category}</h4>
+            {skills.map((skill, i) => (
+              <button data-skill-id={skill.id} class="skill-card group rounded-xl border border-border bg-surface p-6 hover:border-accent/40 transition-all text-left" style={`transition-delay: ${i * 50}ms`}>
+                <div class="flex items-center justify-between mb-3">
+                  <h4 class="text-sm font-medium text-accent">{skill.category}</h4>
+                  <svg class="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
                 <ul class="space-y-2">
-                  {group.items.map((item) => (<li class="text-sm text-text-muted flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent/50"></span>{item}</li>))}
+                  {skill.items.map((item) => (<li class="text-sm text-text-muted flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent/50"></span>{item}</li>))}
                 </ul>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -446,6 +537,16 @@ const skills = [
   .section-title.visible {
     opacity: 1;
     transform: translateX(0);
+  }
+  
+  /* Skill card hover effect */
+  .skill-card {
+    cursor: pointer;
+  }
+  
+  .skill-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(129, 140, 248, 0.1);
   }
 </style>
 
@@ -760,6 +861,141 @@ const skills = [
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
       closeModal();
+    }
+  });
+
+  // Skill modal
+  const skillsData = [
+    { 
+      id: 'java-go',
+      category: 'Java/Go',
+      description: '熟练掌握 Java 核心技术栈，包括集合框架、并发编程、JVM 调优等。了解 Go 语言并发模型。',
+      details: [
+        { title: 'Java 基础', content: '熟练掌握面向对象编程、反射机制、异常处理、IO/NIO、泛型等核心特性' },
+        { title: 'JVM 调优', content: '熟悉内存结构（堆、栈、方法区）、垃圾回收算法、GC 日志分析、性能调优实践' },
+        { title: 'JUC 并发', content: '深入理解 CAS、AQS、线程池原理、锁机制、并发容器、ThreadLocal 等' },
+        { title: 'Go pprof', content: '了解 Go 并发模型，掌握 pprof 性能分析工具，有实际服务调优经验' },
+      ]
+    },
+    { 
+      id: 'database',
+      category: '数据库',
+      description: '精通关系型数据库与 NoSQL，熟悉分布式存储与消息队列。',
+      details: [
+        { title: 'MySQL', content: '熟悉事务原理、锁机制、MVCC、索引优化、慢 SQL 分析、主从复制' },
+        { title: 'Redis', content: '熟练使用各种数据结构，了解持久化、哨兵、集群、缓存穿透/雪崩解决方案' },
+        { title: 'ClickHouse', content: '有实际使用经验，了解列式存储、聚合查询优化、分区策略' },
+        { title: 'Kafka', content: '熟悉消息队列模型、分区副本、消费者组、高吞吐读写实践' },
+      ]
+    },
+    { 
+      id: 'frameworks',
+      category: '框架',
+      description: '熟练使用主流 Java 框架，理解核心原理与最佳实践。',
+      details: [
+        { title: 'Spring Boot', content: '熟练使用 IOC、AOP、自动配置，理解 Bean 生命周期、循环依赖解决机制' },
+        { title: 'Spring Security', content: '掌握认证授权流程、JWT、OAuth2、权限控制实现' },
+        { title: 'MyBatis', content: '熟悉动态 SQL、缓存机制、插件扩展、批量操作优化' },
+        { title: 'gRPC', content: '了解 RPC 框架、Protocol Buffers、服务治理' },
+      ]
+    },
+    { 
+      id: 'middleware',
+      category: '中间件',
+      description: '有丰富中间件使用经验，参与过大规模系统架构设计。',
+      details: [
+        { title: 'Kafka', content: '高吞吐消息队列实践，消费者组管理、消息可靠性保障' },
+        { title: 'Canal', content: 'MySQL binlog 解析、数据同步、缓存一致性保障' },
+        { title: 'Elasticsearch', content: '全文检索、聚合查询、索引设计、性能优化' },
+        { title: 'WebSocket', content: '实时通信、流式输出、长连接管理' },
+      ]
+    },
+    { 
+      id: 'design-patterns',
+      category: '设计模式',
+      description: '熟悉常见设计模式，在实际项目中灵活运用。',
+      details: [
+        { title: '单例模式', content: '双重检查锁、枚举实现、应用场景' },
+        { title: '工厂模式', content: '简单工厂、工厂方法、抽象工厂' },
+        { title: '策略模式', content: '算法族封装、运行时切换、消除条件语句' },
+        { title: '责任链模式', content: '请求处理链、拦截器、过滤器' },
+        { title: '模板方法', content: '算法骨架、扩展点设计、代码复用' },
+      ]
+    },
+    { 
+      id: 'engineering',
+      category: '工程实践',
+      description: '有大流量系统设计与优化经验，注重工程质量与可观测性。',
+      details: [
+        { title: '性能优化', content: '系统瓶颈分析、JVM 调优、数据库优化、缓存策略' },
+        { title: '高并发架构', content: '限流、降级、熔断、异步处理、读写分离' },
+        { title: '分布式系统', content: '分布式事务、一致性保障、服务拆分、CAP 权衡' },
+        { title: '监控告警', content: 'Prometheus、Grafana、链路追踪、日志分析' },
+      ]
+    },
+  ];
+
+  const skillModal = document.getElementById('skill-modal');
+  const skillModalContent = document.getElementById('skill-modal-content');
+  const skillModalBody = document.getElementById('skill-modal-body');
+  const skillModalClose = document.getElementById('skill-modal-close');
+  const skillModalBackdrop = document.getElementById('skill-modal-backdrop');
+
+  function openSkillModal(skillId: string) {
+    const skill = skillsData.find(s => s.id === skillId);
+    if (!skill || !skillModal || !skillModalBody || !skillModalContent) return;
+
+    skillModalBody.innerHTML = `
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold mb-2">${skill.category}</h2>
+        <p class="text-text-muted leading-relaxed">${skill.description}</p>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-accent">详细技能</h3>
+        <div class="space-y-4">
+          ${skill.details.map(d => `
+            <div class="p-4 rounded-lg border border-border bg-bg/50">
+              <h4 class="font-medium mb-2">${d.title}</h4>
+              <p class="text-sm text-text-muted">${d.content}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    skillModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    requestAnimationFrame(() => {
+      skillModalContent.classList.remove('opacity-0', 'scale-95');
+      skillModalContent.classList.add('opacity-100', 'scale-100');
+    });
+  }
+
+  function closeSkillModal() {
+    if (!skillModal || !skillModalContent) return;
+    skillModalContent.classList.remove('opacity-100', 'scale-100');
+    skillModalContent.classList.add('opacity-0', 'scale-95');
+    
+    setTimeout(() => {
+      skillModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }, 300);
+  }
+
+  document.querySelectorAll('.skill-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const skillId = (card as HTMLElement).dataset.skillId;
+      if (skillId) openSkillModal(skillId);
+    });
+  });
+
+  skillModalClose?.addEventListener('click', closeSkillModal);
+  skillModalBackdrop?.addEventListener('click', closeSkillModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !skillModal?.classList.contains('hidden')) {
+      closeSkillModal();
     }
   });
 </script>
