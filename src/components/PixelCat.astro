@@ -1,0 +1,207 @@
+---
+// Pixel Cat component - follows mouse, wobbles on hover
+---
+
+<div id="pixel-cat" class="fixed pointer-events-none z-40 transition-transform duration-100" style="left: 50%; top: 50%;">
+  <canvas id="cat-canvas" width="32" height="32" class="image-render-pixelated"></canvas>
+</div>
+
+<style>
+  #pixel-cat {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  #cat-canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+</style>
+
+<script>
+  const catEl = document.getElementById('pixel-cat');
+  const canvas = document.getElementById('cat-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+  
+  // Pixel cat design (16x16 scaled to 32x32)
+  // Colors
+  const COLORS = {
+    fur: '#f5a623',      // Orange tabby
+    furDark: '#d4871b',  // Darker stripes
+    furLight: '#ffd699', // Light fur
+    eye: '#2d2d2d',      // Dark eyes
+    eyeShine: '#ffffff', // Eye shine
+    nose: '#ff9999',     // Pink nose
+    ear: '#ffb3b3',      // Pink ears
+  };
+
+  // Cat position & state
+  let catX = window.innerWidth / 2;
+  let catY = window.innerHeight / 2;
+  let targetX = catX;
+  let targetY = catY;
+  let wobble = 0;
+  let wobbleSpeed = 0;
+  let eyeOffsetX = 0;
+  let eyeOffsetY = 0;
+  let isHovering = false;
+  let isJumping = false;
+  let jumpY = 0;
+
+  // Mouse position
+  let mouseX = catX;
+  let mouseY = catY;
+
+  // Draw pixel
+  function drawPixel(x: number, y: number, color: string, scale = 2) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x * scale, y * scale, scale, scale);
+  }
+
+  // Draw the cat
+  function drawCat() {
+    ctx.clearRect(0, 0, 32, 32);
+    
+    const wobbleOffset = Math.sin(wobble) * (isHovering ? 1.5 : 0.5);
+    const jumpOffset = isJumping ? Math.sin(jumpY) * -3 : 0;
+    
+    // Body (sitting cat, 12x12 pixels)
+    const baseX = 2;
+    const baseY = 8 + Math.floor(wobbleOffset) + Math.floor(jumpOffset);
+    
+    // Body base
+    for (let i = 0; i < 10; i++) {
+      drawPixel(baseX + i, baseY + 6, COLORS.fur);
+      drawPixel(baseX + i, baseY + 7, COLORS.furDark);
+    }
+    
+    // Body middle
+    for (let i = 1; i < 9; i++) {
+      drawPixel(baseX + i, baseY + 5, COLORS.fur);
+      drawPixel(baseX + i, baseY + 4, i === 2 || i === 6 ? COLORS.furDark : COLORS.fur);
+    }
+    
+    // Stripes
+    drawPixel(baseX + 2, baseY + 5, COLORS.furDark);
+    drawPixel(baseX + 6, baseY + 5, COLORS.furDark);
+    
+    // Head
+    const headY = baseY - 2 + Math.floor(wobbleOffset * 0.5);
+    for (let i = 1; i < 8; i++) {
+      drawPixel(baseX + i + 1, headY + 2, COLORS.fur);
+      drawPixel(baseX + i + 1, headY + 3, COLORS.fur);
+    }
+    drawPixel(baseX + 2, headY + 1, COLORS.fur);
+    drawPixel(baseX + 3, headY + 1, COLORS.furLight);
+    drawPixel(baseX + 6, headY + 1, COLORS.furLight);
+    drawPixel(baseX + 7, headY + 1, COLORS.fur);
+    
+    // Ears
+    drawPixel(baseX + 2, headY, COLORS.fur);
+    drawPixel(baseX + 2, headY - 1, COLORS.furDark);
+    drawPixel(baseX + 3, headY - 1, COLORS.ear);
+    drawPixel(baseX + 7, headY, COLORS.fur);
+    drawPixel(baseX + 7, headY - 1, COLORS.furDark);
+    drawPixel(baseX + 6, headY - 1, COLORS.ear);
+    
+    // Eyes (follow mouse)
+    const eyeX1 = baseX + 3;
+    const eyeX2 = baseX + 6;
+    const eyeY = headY + 2;
+    
+    // Eye whites
+    drawPixel(eyeX1 + Math.sign(eyeOffsetX), eyeY + Math.sign(eyeOffsetY), COLORS.eye);
+    drawPixel(eyeX2 + Math.sign(eyeOffsetX), eyeY + Math.sign(eyeOffsetY), COLORS.eye);
+    // Eye shine
+    drawPixel(eyeX1 + Math.sign(eyeOffsetX) + 1, eyeY + Math.sign(eyeOffsetY) - 1, COLORS.eyeShine);
+    drawPixel(eyeX2 + Math.sign(eyeOffsetX) + 1, eyeY + Math.sign(eyeOffsetY) - 1, COLORS.eyeShine);
+    
+    // Nose
+    drawPixel(baseX + 4, headY + 3, COLORS.nose);
+    drawPixel(baseX + 5, headY + 3, COLORS.nose);
+    
+    // Front paws
+    drawPixel(baseX + 2, baseY + 5, COLORS.furLight);
+    drawPixel(baseX + 8, baseY + 5, COLORS.furLight);
+    drawPixel(baseX + 2, baseY + 6, COLORS.fur);
+    drawPixel(baseX + 8, baseY + 6, COLORS.fur);
+    
+    // Tail
+    const tailWobble = Math.sin(wobble * 2) * 1;
+    drawPixel(baseX + 11, baseY + 4 + Math.floor(tailWobble), COLORS.fur);
+    drawPixel(baseX + 12, baseY + 3 + Math.floor(tailWobble), COLORS.fur);
+    drawPixel(baseX + 13, baseY + 2 + Math.floor(tailWobble), COLORS.furDark);
+  }
+
+  // Animation loop
+  function animate() {
+    // Smooth follow mouse
+    catX += (targetX - catX) * 0.08;
+    catY += (targetY - catY) * 0.08;
+    
+    // Update position
+    catEl.style.left = `${catX - 16}px`;
+    catEl.style.top = `${catY - 16}px`;
+    
+    // Wobble animation
+    wobble += isHovering ? 0.2 : 0.05;
+    
+    // Jump animation
+    if (isJumping) {
+      jumpY += 0.3;
+      if (jumpY > Math.PI) {
+        isJumping = false;
+        jumpY = 0;
+      }
+    }
+    
+    // Eye follow mouse
+    const dx = mouseX - catX;
+    const dy = mouseY - catY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    eyeOffsetX = (dx / dist) * 0.5;
+    eyeOffsetY = (dy / dist) * 0.5;
+    
+    drawCat();
+    requestAnimationFrame(animate);
+  }
+
+  // Mouse move handler
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    // Cat follows mouse with some distance
+    const distance = 60;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    
+    // Stay in a general area, but react to mouse
+    targetX = centerX + (mouseX - centerX) * 0.15;
+    targetY = centerY + (mouseY - centerY) * 0.15;
+  });
+
+  // Hover detection
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      isHovering = true;
+      if (!isJumping && Math.random() > 0.7) {
+        isJumping = true;
+        jumpY = 0;
+      }
+    });
+    el.addEventListener('mouseleave', () => {
+      isHovering = false;
+    });
+  });
+
+  // Click to jump
+  document.addEventListener('click', () => {
+    if (!isJumping) {
+      isJumping = true;
+      jumpY = 0;
+    }
+  });
+
+  // Start animation
+  animate();
+</script>
