@@ -557,6 +557,11 @@ const skills = [
   }
 </style>
 
+<script define:vars={{ skillsData }}>
+  // Pass skills data from server to client
+  const SKILLS_DATA = skillsData;
+</script>
+
 <script>
   // Canvas floating text animation
   const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement;
@@ -872,75 +877,7 @@ const skills = [
   });
 
   // Skill modal
-  const skillsData = [
-    { 
-      id: 'java-go',
-      category: 'Java/Go',
-      description: '熟练掌握 Java 核心技术栈，包括集合框架、并发编程、JVM 调优等。了解 Go 语言并发模型。',
-      details: [
-        { title: 'Java 基础', content: '熟练掌握面向对象编程、反射机制、异常处理、IO/NIO、泛型等核心特性' },
-        { title: 'JVM 调优', content: '熟悉内存结构（堆、栈、方法区）、垃圾回收算法、GC 日志分析、性能调优实践' },
-        { title: 'JUC 并发', content: '深入理解 CAS、AQS、线程池原理、锁机制、并发容器、ThreadLocal 等' },
-        { title: 'Go pprof', content: '了解 Go 并发模型，掌握 pprof 性能分析工具，有实际服务调优经验' },
-      ]
-    },
-    { 
-      id: 'database',
-      category: '数据库',
-      description: '精通关系型数据库与 NoSQL，熟悉分布式存储与消息队列。',
-      details: [
-        { title: 'MySQL', content: '熟悉事务原理、锁机制、MVCC、索引优化、慢 SQL 分析、主从复制' },
-        { title: 'Redis', content: '熟练使用各种数据结构，了解持久化、哨兵、集群、缓存穿透/雪崩解决方案' },
-        { title: 'ClickHouse', content: '有实际使用经验，了解列式存储、聚合查询优化、分区策略' },
-        { title: 'Kafka', content: '熟悉消息队列模型、分区副本、消费者组、高吞吐读写实践' },
-      ]
-    },
-    { 
-      id: 'frameworks',
-      category: '框架',
-      description: '熟练使用主流 Java 框架，理解核心原理与最佳实践。',
-      details: [
-        { title: 'Spring Boot', content: '熟练使用 IOC、AOP、自动配置，理解 Bean 生命周期、循环依赖解决机制' },
-        { title: 'Spring Security', content: '掌握认证授权流程、JWT、OAuth2、权限控制实现' },
-        { title: 'MyBatis', content: '熟悉动态 SQL、缓存机制、插件扩展、批量操作优化' },
-        { title: 'gRPC', content: '了解 RPC 框架、Protocol Buffers、服务治理' },
-      ]
-    },
-    { 
-      id: 'middleware',
-      category: '中间件',
-      description: '有丰富中间件使用经验，参与过大规模系统架构设计。',
-      details: [
-        { title: 'Kafka', content: '高吞吐消息队列实践，消费者组管理、消息可靠性保障' },
-        { title: 'Canal', content: 'MySQL binlog 解析、数据同步、缓存一致性保障' },
-        { title: 'Elasticsearch', content: '全文检索、聚合查询、索引设计、性能优化' },
-        { title: 'WebSocket', content: '实时通信、流式输出、长连接管理' },
-      ]
-    },
-    { 
-      id: 'design-patterns',
-      category: '设计模式',
-      description: '熟悉常见设计模式，在实际项目中灵活运用。',
-      details: [
-        { title: '单例模式', content: '双重检查锁、枚举实现、应用场景' },
-        { title: '工厂模式', content: '简单工厂、工厂方法、抽象工厂' },
-        { title: '策略模式', content: '算法族封装、运行时切换、消除条件语句' },
-        { title: '责任链模式', content: '请求处理链、拦截器、过滤器' },
-        { title: '模板方法', content: '算法骨架、扩展点设计、代码复用' },
-      ]
-    },
-    { 
-      id: 'engineering',
-      category: '工程实践',
-      description: '有大流量系统设计与优化经验，注重工程质量与可观测性。',
-      details: [
-        { title: '性能优化', content: '系统瓶颈分析、JVM 调优、数据库优化、缓存策略' },
-        { title: '高并发架构', content: '限流、降级、熔断、异步处理、读写分离' },
-        { title: '分布式系统', content: '分布式事务、一致性保障、服务拆分、CAP 权衡' },
-        { title: '监控告警', content: 'Prometheus、Grafana、链路追踪、日志分析' },
-      ]
-    },
-  ];
+  const skillsData = SKILLS_DATA;
 
   const skillModal = document.getElementById('skill-modal');
   const skillModalContent = document.getElementById('skill-modal-content');

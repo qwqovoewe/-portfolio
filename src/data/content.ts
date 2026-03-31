@@ -252,7 +252,8 @@ export const footer = {
 
 // ========== 导航菜单 ==========
 export const navItems = [
-  { label: "项目", href: "#projects" },
-  { label: "时间线", href: "#timeline" },
-  { label: "关于", href: "#about" },
+  { name: "首页", href: "#hero" },
+  { name: "作品集", href: "#projects" },
+  { name: "时间线", href: "#timeline" },
+  { name: "关于", href: "#about" },
 ];
