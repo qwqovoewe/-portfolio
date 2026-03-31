@@ -398,8 +398,15 @@ const skills = [
     pointer-events: auto;
   }
   
-  /* Content sections on top */
-  #projects, #timeline, #about, footer {
+  /* Content sections on top - start AFTER hero */
+  #projects {
+    position: relative;
+    z-index: 10;
+    background: var(--bg);
+    margin-top: 100vh; /* Start after hero */
+  }
+  
+  #timeline, #about, footer {
     position: relative;
     z-index: 10;
     background: var(--bg);
