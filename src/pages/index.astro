@@ -106,10 +106,10 @@ const skills = [
 <Layout title="Ruixuan | Portfolio">
   <!-- Hero Section -->
   <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
-    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full"></canvas>
+    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full hero-parallax"></canvas>
     <div id="hero-overlay" class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg pointer-events-none"></div>
     
-    <div class="relative z-10 text-center px-6">
+    <div class="relative z-10 text-center px-6 hero-content">
       <p class="text-text-muted text-sm tracking-widest uppercase mb-4 animate-fade-in-up">Welcome</p>
       <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 animate-fade-in-up animation-delay-100">
         Hi, I'm <span class="text-accent">Ruixuan Wang</span>
@@ -123,7 +123,7 @@ const skills = [
       </div>
     </div>
     
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce scroll-indicator">
       <svg class="w-6 h-6 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
       </svg>
@@ -335,13 +335,70 @@ const skills = [
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  
+  @keyframes slide-in-left {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
   .animate-fade-in-up { animation: fade-in-up 0.6s ease-out forwards; }
+  .animate-slide-in-left { animation: slide-in-left 0.8s ease-out forwards; }
+  .animate-scale-in { animation: scale-in 0.6s ease-out forwards; }
+  .animate-float { animation: float 3s ease-in-out infinite; }
+  
   .animation-delay-100 { animation-delay: 100ms; }
   .animation-delay-200 { animation-delay: 200ms; }
   .animation-delay-300 { animation-delay: 300ms; }
-  .section-animate { transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
-  .section-animate.visible { opacity: 1 !important; transform: translateY(0) translateX(0) !important; }
+  
+  .section-animate { 
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+  }
+  .section-animate.visible { 
+    opacity: 1 !important; 
+    transform: translateY(0) translateX(0) !important; 
+  }
+  
   html { scroll-behavior: smooth; }
+  
+  /* Enhanced hero parallax */
+  #hero-canvas,
+  .hero-content,
+  .hero-parallax {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    transition: opacity 0.1s linear;
+  }
+  
+  /* Smooth section transitions */
+  section {
+    transform: translateZ(0);
+  }
+  
+  /* Enhanced parallax backgrounds */
+  .parallax-bg {
+    will-change: transform;
+  }
+  
+  /* Project card hover glow effect */
+  .project-card:hover {
+    box-shadow: 0 0 30px rgba(129, 140, 248, 0.15);
+  }
+  
+  /* Timeline item animation enhancement */
+  #timeline .section-animate.visible {
+    animation: slide-in-left 0.6s ease-out forwards;
+  }
 </style>
 
 <script>
@@ -417,20 +474,80 @@ const skills = [
   draw();
   window.addEventListener('resize', () => { resize(); initParticles(); });
 
-  // Scroll-triggered animations
+  // Enhanced scroll-triggered animations with stagger
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
+        // Add stagger delay based on index
+        const parent = entry.target.parentElement;
+        if (parent) {
+          const siblings = Array.from(parent.querySelectorAll('.section-animate'));
+          const index = siblings.indexOf(entry.target);
+          (entry.target as HTMLElement).style.transitionDelay = `${index * 100}ms`;
+        }
         entry.target.classList.add('visible');
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
   document.querySelectorAll('.section-animate').forEach(el => observer.observe(el));
 
+  // Hero parallax effect
+  const heroCanvas = document.getElementById('hero-canvas');
+  const heroOverlay = document.getElementById('hero-overlay');
+  const heroContent = document.querySelector('.hero-content');
+  const scrollIndicator = document.querySelector('.scroll-indicator');
+  
+  function updateHeroParallax() {
+    const scrollY = window.scrollY;
+    const heroHeight = window.innerHeight;
+    const parallaxAmount = Math.min(scrollY / heroHeight, 1);
+    
+    if (heroCanvas) {
+      (heroCanvas as HTMLElement).style.transform = `translateY(${scrollY * 0.3}px) scale(${1 + parallaxAmount * 0.1})`;
+      (heroCanvas as HTMLElement).style.opacity = `${1 - parallaxAmount * 0.5}`;
+    }
+    
+    if (heroOverlay) {
+      (heroOverlay as HTMLElement).style.opacity = `${parallaxAmount * 0.3}`;
+    }
+    
+    if (heroContent) {
+      (heroContent as HTMLElement).style.transform = `translateY(${scrollY * 0.5}px)`;
+      (heroContent as HTMLElement).style.opacity = `${1 - parallaxAmount * 1.5}`;
+    }
+    
+    if (scrollIndicator) {
+      (scrollIndicator as HTMLElement).style.opacity = `${1 - parallaxAmount * 3}`;
+    }
+  }
+
+  // Enhanced parallax backgrounds with smoother animation
+  const parallaxBgs = document.querySelectorAll('.parallax-bg');
+  let ticking = false;
+  
+  function updateParallax() {
+    const scrollY = window.scrollY;
+    
+    parallaxBgs.forEach((bg, index) => {
+      const speed = 0.1 + (index * 0.05);
+      const yPos = scrollY * speed;
+      (bg as HTMLElement).style.transform = `translate3d(0, ${yPos}px, 0)`;
+    });
+    
+    updateHeroParallax();
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateParallax);
+      ticking = true;
+    }
+  }, { passive: true });
+
   // Nav highlighting on scroll
   const sections = ['hero', 'projects', 'timeline', 'about'];
-  const navLinks = document.querySelectorAll('.nav-link');
 
   function updateNav() {
     const scrollY = window.scrollY + window.innerHeight / 3;
@@ -439,19 +556,8 @@ const skills = [
       const el = document.getElementById(id);
       if (el && el.offsetTop <= scrollY) current = id;
     }
-    // Update active nav (simplified - just smooth scroll)
   }
   window.addEventListener('scroll', updateNav);
-
-  // Parallax backgrounds
-  const parallaxBgs = document.querySelectorAll('.parallax-bg');
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    parallaxBgs.forEach((bg) => {
-      const speed = parseFloat((bg as HTMLElement).dataset.speed || '0.2');
-      (bg as HTMLElement).style.transform = `translateY(${scrollY * speed}px)`;
-    });
-  });
 
   // Copy to clipboard functionality
   document.querySelectorAll('.copy-btn').forEach((btn) => {

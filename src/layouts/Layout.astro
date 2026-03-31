@@ -27,6 +27,18 @@ const navItems = [
   </head>
   <body class="min-h-screen flex flex-col">
     <Oneko />
+    
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress" class="fixed top-0 left-0 right-0 h-0.5 bg-accent/50 z-[60] origin-left scale-x-0"></div>
+    
+    <!-- Section Dots Navigation -->
+    <div id="section-dots" class="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-3">
+      <button data-section="hero" class="section-dot w-3 h-3 rounded-full bg-border hover:bg-accent/50 transition-all" title="首页"></button>
+      <button data-section="projects" class="section-dot w-3 h-3 rounded-full bg-border hover:bg-accent/50 transition-all" title="作品集"></button>
+      <button data-section="timeline" class="section-dot w-3 h-3 rounded-full bg-border hover:bg-accent/50 transition-all" title="时间线"></button>
+      <button data-section="about" class="section-dot w-3 h-3 rounded-full bg-border hover:bg-accent/50 transition-all" title="关于"></button>
+    </div>
+    
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg/80 backdrop-blur-md">
       <div class="mx-auto max-w-5xl flex items-center justify-between px-6 h-16">
         <a href={`${base}`} class="text-lg font-bold tracking-tight text-accent">Ruixuan</a>
@@ -50,6 +62,64 @@ const navItems = [
     </main>
   </body>
 </html>
+
+<script>
+  // Scroll progress bar
+  const scrollProgress = document.getElementById('scroll-progress');
+  
+  function updateScrollProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+    if (scrollProgress) {
+      scrollProgress.style.transform = `scaleX(${progress})`;
+    }
+  }
+  
+  window.addEventListener('scroll', updateScrollProgress);
+  updateScrollProgress();
+
+  // Section dots navigation
+  const sections = ['hero', 'projects', 'timeline', 'about'];
+  const dots = document.querySelectorAll('.section-dot');
+  
+  function updateActiveDot() {
+    const scrollY = window.scrollY + window.innerHeight / 2;
+    let current = 'hero';
+    
+    for (const id of sections) {
+      const el = document.getElementById(id);
+      if (el && el.offsetTop <= scrollY) {
+        current = id;
+      }
+    }
+    
+    dots.forEach(dot => {
+      const sectionId = (dot as HTMLElement).dataset.section;
+      if (sectionId === current) {
+        dot.classList.add('bg-accent', 'scale-125');
+        dot.classList.remove('bg-border');
+      } else {
+        dot.classList.remove('bg-accent', 'scale-125');
+        dot.classList.add('bg-border');
+      }
+    });
+  }
+  
+  window.addEventListener('scroll', updateActiveDot);
+  updateActiveDot();
+  
+  // Click dot to scroll
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const sectionId = (dot as HTMLElement).dataset.section;
+      const el = document.getElementById(sectionId || '');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
 
 <style is:global>
   @import '../styles/global.css';
