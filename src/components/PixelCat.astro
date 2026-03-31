@@ -3,7 +3,7 @@
 ---
 
 <div id="pixel-cat" class="fixed pointer-events-none z-40" style="left: 50%; top: 50%;"></div>
-<canvas id="cat-canvas" width="64" height="64" class="fixed pointer-events-none z-40 image-render-pixelated" style="display: none;"></canvas>
+<canvas id="cat-canvas" width="96" height="96" class="fixed pointer-events-none z-40 image-render-pixelated" style="display: none;"></canvas>
 
 <style>
   #cat-canvas {
@@ -79,9 +79,9 @@
     const eyeOpen = state === 'sleep' ? 0 : (state === 'yawn' ? 0.3 : 1);
     const eyeHeight = Math.floor(2 * eyeOpen);
     
-    // Base position
-    const bx = 8;
-    const by = 20 - bounce + breathe + sitSquash;
+    // Base position (centered in 24x24 pixel grid)
+    const bx = 6;
+    const by = 8 - bounce + breathe + sitSquash;
     
     // === BODY ===
     // Main body (chubby)
@@ -338,8 +338,8 @@
     x = Math.max(50, Math.min(window.innerWidth - 50, x));
     y = Math.max(100, Math.min(window.innerHeight - 100, y));
     
-    canvas.style.left = `${x - 32}px`;
-    canvas.style.top = `${y - 32}px`;
+    canvas.style.left = `${x - 48}px`;
+    canvas.style.top = `${y - 48}px`;
     canvas.style.display = 'block';
     catEl.style.display = 'none';
     
