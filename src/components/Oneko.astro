@@ -333,6 +333,7 @@ class Neko {
 }
 
 // Initialize
-const neko = new Neko("/portfolio/neko-orange.png");
+const base = import.meta.env.BASE_URL;
+const neko = new Neko(`${base}neko-orange.png`);
 neko.init();
 </script>
