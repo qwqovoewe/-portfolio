@@ -1,13 +1,17 @@
 ---
 interface Props {
   title: string;
+  currentPage?: string; // 用于标识当前页面
 }
 
 import Oneko from '../components/Oneko.astro';
 import { navItems, profile } from '../data/content';
 
-const { title } = Astro.props;
+const { title, currentPage = 'home' } = Astro.props;
 const base = import.meta.env.BASE_URL;
+
+// 判断是否在主页
+const isHomePage = currentPage === 'home';
 ---
 
 <!doctype html>
@@ -33,6 +37,11 @@ const base = import.meta.env.BASE_URL;
       <button data-section="about" class="section-dot w-3 h-3 rounded-full bg-border hover:bg-accent/50 transition-all" title="关于"></button>
     </div>
     
+    <!-- 传递当前页面信息给客户端脚本 -->
+    <script define:vars={{ isHomePage }}>
+      window.IS_HOME_PAGE = isHomePage;
+    </script>
+    
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-border bg-bg/80 backdrop-blur-md">
       <div class="mx-auto max-w-5xl flex items-center justify-between px-6 h-16">
         <a href={`${base}`} class="text-lg font-bold tracking-tight text-accent">{profile.nameEn.split(' ')[0]}</a>
@@ -40,7 +49,7 @@ const base = import.meta.env.BASE_URL;
           {navItems.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={isHomePage ? item.href : `${base}${item.href}`}
                 class="nav-link px-3 py-1.5 rounded-md text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
               >
                 {item.name}
@@ -76,8 +85,12 @@ const base = import.meta.env.BASE_URL;
   // Section dots navigation
   const sections = ['hero', 'projects', 'timeline', 'about'];
   const dots = document.querySelectorAll('.section-dot');
+  const isHomePage = (window as any).IS_HOME_PAGE !== false;
   
   function updateActiveDot() {
+    // 只在主页更新高亮状态
+    if (!isHomePage) return;
+    
     const scrollY = window.scrollY + window.innerHeight / 2;
     let current = 'hero';
     
@@ -103,13 +116,18 @@ const base = import.meta.env.BASE_URL;
   window.addEventListener('scroll', updateActiveDot);
   updateActiveDot();
   
-  // Click dot to scroll
+  // Click dot to scroll or navigate
   dots.forEach(dot => {
     dot.addEventListener('click', () => {
       const sectionId = (dot as HTMLElement).dataset.section;
       const el = document.getElementById(sectionId || '');
-      if (el) {
+      
+      if (isHomePage && el) {
+        // 在主页，直接滚动
         el.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        // 在其他页面，跳转到主页对应位置
+        window.location.href = '/' + (sectionId ? `#${sectionId}` : '');
       }
     });
   });
