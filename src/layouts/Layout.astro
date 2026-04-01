@@ -45,18 +45,35 @@ const isHomePage = currentPage === 'home';
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-bg/60 backdrop-blur-xl shadow-sm shadow-black/5">
       <div class="mx-auto max-w-5xl flex items-center justify-between px-6 h-16">
         <a href={`${base}`} class="text-lg font-bold tracking-tight text-accent">{profile.nameEn.split(' ')[0]}</a>
-        <ul class="flex items-center gap-1">
-          {navItems.map((item) => (
-            <li>
-              <a
-                href={isHomePage ? item.href : `${base}${item.href}`}
-                class="nav-link px-3 py-1.5 rounded-md text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
-              >
-                {item.name}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div class="flex items-center gap-2">
+          <ul class="flex items-center gap-1">
+            {navItems.map((item) => (
+              <li>
+                <a
+                  href={isHomePage ? item.href : `${base}${item.href}`}
+                  class="nav-link px-3 py-1.5 rounded-md text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
+                >
+                  {item.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <!-- 主题切换按钮 -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-lg hover:bg-surface-hover transition-all duration-200 text-text-muted hover:text-text"
+            title="切换主题"
+          >
+            <!-- 月亮图标 - 深色主题显示 -->
+            <svg class="w-5 h-5 theme-icon-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            <!-- 太阳图标 - 亮色主题显示 -->
+            <svg class="w-5 h-5 theme-icon-light hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </button>
+        </div>
       </div>
     </nav>
 
@@ -67,6 +84,40 @@ const isHomePage = currentPage === 'home';
 </html>
 
 <script>
+  // 主题切换 - 深色主题是默认的
+  const themeToggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+  const darkIcon = document.querySelector('.theme-icon-dark');
+  const lightIcon = document.querySelector('.theme-icon-light');
+  
+  // 只检查用户保存的主题偏好，不检测系统偏好
+  // 深色主题是默认的，所以只有当用户明确选择了亮色主题时才切换
+  const savedTheme = localStorage.getItem('theme');
+  
+  if (savedTheme === 'light') {
+    html.setAttribute('data-theme', 'light');
+    darkIcon?.classList.add('hidden');
+    lightIcon?.classList.remove('hidden');
+  }
+  
+  themeToggle?.addEventListener('click', () => {
+    const currentTheme = html.getAttribute('data-theme');
+    
+    if (currentTheme === 'light') {
+      // 切换到深色主题
+      html.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
+      darkIcon?.classList.remove('hidden');
+      lightIcon?.classList.add('hidden');
+    } else {
+      // 切换到亮色主题
+      html.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+      darkIcon?.classList.add('hidden');
+      lightIcon?.classList.remove('hidden');
+    }
+  });
+
   // Scroll progress bar
   const scrollProgress = document.getElementById('scroll-progress');
   

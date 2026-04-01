@@ -40,3 +40,15 @@ body {
   background: var(--color-border);
   border-radius: 3px;
 }
+
+/* 亮色主题 - 只在 data-theme="light" 时生效 */
+:root[data-theme="light"] {
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f4f4f5;
+  --color-border: #e4e4e7;
+  --color-text: #18181b;
+  --color-text-muted: #71717a;
+  --color-accent: #6366f1;
+  --color-accent-hover: #4f46e5;
+}
