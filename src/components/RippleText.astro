@@ -1,0 +1,222 @@
+---
+// RippleText - 文字波纹效果组件
+// 小猫追逐鼠标时，文字粒子像水一样散开
+---
+
+<canvas id="ripple-canvas" class="fixed inset-0 w-full h-full pointer-events-none" style="z-index: 0;"></canvas>
+
+<script>
+// 全局小猫位置共享
+declare global {
+  interface Window {
+    NEKO_POSITION: { x: number; y: number };
+    MOUSE_POSITION: { x: number; y: number };
+  }
+}
+
+window.NEKO_POSITION = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+window.MOUSE_POSITION = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+// 追踪鼠标位置
+document.addEventListener('mousemove', (e) => {
+  window.MOUSE_POSITION = { x: e.clientX, y: e.clientY };
+});
+
+// Canvas 波纹粒子系统
+const canvas = document.getElementById('ripple-canvas') as HTMLCanvasElement;
+const ctx = canvas.getContext('2d')!;
+
+let width = 0, height = 0;
+const dpr = window.devicePixelRatio || 1;
+
+// 粒子类
+class TextParticle {
+  text: string;
+  x: number;
+  y: number;
+  originX: number;
+  originY: number;
+  vx: number = 0;
+  vy: number = 0;
+  fontSize: number;
+  opacity: number;
+  color: string;
+  
+  constructor(text: string, x: number, y: number) {
+    this.text = text;
+    this.x = x;
+    this.y = y;
+    this.originX = x;
+    this.originY = y;
+    this.fontSize = 12 + Math.random() * 16;
+    this.opacity = 0.06 + Math.random() * 0.1;
+    this.color = `rgba(129, 140, 248, ${this.opacity})`;
+  }
+  
+  update(nekoX: number, nekoY: number) {
+    // 计算与小猫的距离
+    const dx = this.x - nekoX;
+    const dy = this.y - nekoY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    // 影响半径
+    const radius = 120;
+    
+    if (dist < radius) {
+      // 推力 - 距离越近，推力越大
+      const force = (radius - dist) / radius;
+      const angle = Math.atan2(dy, dx);
+      this.vx += Math.cos(angle) * force * 2;
+      this.vy += Math.sin(angle) * force * 2;
+    }
+    
+    // 弹簧力 - 回到原点
+    const springK = 0.02;
+    this.vx += (this.originX - this.x) * springK;
+    this.vy += (this.originY - this.y) * springK;
+    
+    // 阻尼
+    this.vx *= 0.92;
+    this.vy *= 0.92;
+    
+    // 更新位置
+    this.x += this.vx;
+    this.y += this.vy;
+  }
+  
+  draw(ctx: CanvasRenderingContext2D) {
+    // 根据速度调整透明度
+    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+    const dynamicOpacity = Math.min(this.opacity + speed * 0.02, 0.3);
+    
+    ctx.globalAlpha = dynamicOpacity;
+    ctx.font = `${this.fontSize}px "Inter", system-ui, sans-serif`;
+    ctx.fillStyle = '#818cf8';
+    ctx.fillText(this.text, this.x, this.y);
+  }
+}
+
+// 网格点粒子类
+class DotParticle {
+  x: number;
+  y: number;
+  originX: number;
+  originY: number;
+  vx: number = 0;
+  vy: number = 0;
+  
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+    this.originX = x;
+    this.originY = y;
+  }
+  
+  update(nekoX: number, nekoY: number) {
+    const dx = this.x - nekoX;
+    const dy = this.y - nekoY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const radius = 80;
+    
+    if (dist < radius) {
+      const force = (radius - dist) / radius;
+      const angle = Math.atan2(dy, dx);
+      this.vx += Math.cos(angle) * force * 1.5;
+      this.vy += Math.sin(angle) * force * 1.5;
+    }
+    
+    // 弹簧力
+    this.vx += (this.originX - this.x) * 0.05;
+    this.vy += (this.originY - this.y) * 0.05;
+    
+    // 阻尼
+    this.vx *= 0.9;
+    this.vy *= 0.9;
+    
+    this.x += this.vx;
+    this.y += this.vy;
+  }
+  
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+// 粒子数组
+const textParticles: TextParticle[] = [];
+const dotParticles: DotParticle[] = [];
+const phrases = ['Code', 'Design', 'Create', 'Build', 'Ship', 'Learn', 'Explore', 'Dream', '构建', '创造', '探索', 'Java', 'Go', 'Redis', 'Kafka'];
+
+function resize() {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  initParticles();
+}
+
+function initParticles() {
+  textParticles.length = 0;
+  dotParticles.length = 0;
+  
+  // 文字粒子
+  const textCount = Math.min(Math.floor((width * height) / 35000), 25);
+  for (let i = 0; i < textCount; i++) {
+    const text = phrases[Math.floor(Math.random() * phrases.length)];
+    textParticles.push(new TextParticle(
+      text,
+      Math.random() * width,
+      Math.random() * height
+    ));
+  }
+  
+  // 网格点粒子
+  const spacing = 50;
+  for (let x = spacing; x < width; x += spacing) {
+    for (let y = spacing; y < height; y += spacing) {
+      dotParticles.push(new DotParticle(x, y));
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, width, height);
+  
+  // 获取小猫位置
+  const nekoPos = window.NEKO_POSITION || { x: width / 2, y: height / 2 };
+  
+  // 绘制网格点
+  ctx.globalAlpha = 0.04;
+  ctx.fillStyle = '#818cf8';
+  for (const dot of dotParticles) {
+    dot.update(nekoPos.x, nekoPos.y);
+    dot.draw(ctx);
+  }
+  
+  // 绘制文字粒子
+  for (const particle of textParticles) {
+    particle.update(nekoPos.x, nekoPos.y);
+    particle.draw(ctx);
+  }
+  
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animate);
+}
+
+// 初始化
+resize();
+animate();
+window.addEventListener('resize', resize);
+</script>
+
+<style>
+  #ripple-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+</style>

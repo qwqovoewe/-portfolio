@@ -30,7 +30,6 @@ const projectsData = projects.map(p => ({
 <Layout title="Ruixuan | Portfolio" currentPage="home">
   <!-- Hero Section -->
   <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
-    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full hero-parallax"></canvas>
     <div id="hero-overlay" class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg pointer-events-none"></div>
     
     <div class="relative z-10 text-center px-6 hero-content">
@@ -536,78 +535,6 @@ const projectsData = projects.map(p => ({
   }
   animateCursor();
 
-  // Canvas floating text animation
-  const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d')!;
-  let width = 0, height = 0, time = 0;
-  const phrases = ['Code', 'Design', 'Create', 'Build', 'Ship', 'Learn', 'Explore', 'Dream', '构建', '创造', '探索'];
-  const particles: { text: string; x: number; y: number; vx: number; vy: number; fontSize: number; opacity: number }[] = [];
-
-  function resize() {
-    const dpr = window.devicePixelRatio || 1;
-    width = canvas.clientWidth;
-    height = canvas.clientHeight;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function initParticles() {
-    particles.length = 0;
-    const count = Math.min(Math.floor((width * height) / 40000), 18);
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        text: phrases[Math.floor(Math.random() * phrases.length)],
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        fontSize: 14 + Math.random() * 20,
-        opacity: 0.08 + Math.random() * 0.12, // 增加亮度 0.03+0.07 -> 0.08+0.12
-      });
-    }
-  }
-
-  function draw() {
-    time += 0.005;
-    ctx.clearRect(0, 0, width, height);
-
-    for (const p of particles) {
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < -100) p.x = width + 100;
-      if (p.x > width + 100) p.x = -100;
-      if (p.y < -50) p.y = height + 50;
-      if (p.y > height + 50) p.y = -50;
-
-      const wave = Math.sin(time + p.x * 0.01) * 0.02;
-      ctx.globalAlpha = p.opacity + wave;
-      ctx.font = `${p.fontSize}px "Inter", system-ui, sans-serif`;
-      ctx.fillStyle = '#818cf8';
-      ctx.fillText(p.text, p.x, p.y);
-    }
-
-    // Grid dots
-    ctx.globalAlpha = 0.04;
-    ctx.fillStyle = '#818cf8';
-    const spacing = 40;
-    for (let x = 0; x < width; x += spacing) {
-      for (let y = 0; y < height; y += spacing) {
-        const offset = Math.sin(time * 2 + x * 0.02 + y * 0.02) * 1;
-        ctx.beginPath();
-        ctx.arc(x + offset, y + offset, 1, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-    ctx.globalAlpha = 1;
-    requestAnimationFrame(draw);
-  }
-
-  resize();
-  initParticles();
-  draw();
-  window.addEventListener('resize', () => { resize(); initParticles(); });
-
   // Scroll-triggered animations
   const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -623,7 +550,6 @@ const projectsData = projects.map(p => ({
   });
 
   // Hero parallax effect - GitHub style
-  const heroCanvas = document.getElementById('hero-canvas');
   const heroContent = document.querySelector('.hero-content');
   const scrollIndicator = document.querySelector('.scroll-indicator');
   
@@ -633,11 +559,6 @@ const projectsData = projects.map(p => ({
     const scrollY = window.scrollY;
     const heroHeight = window.innerHeight;
     const progress = Math.min(scrollY / (heroHeight * 0.5), 1);
-    
-    // Canvas floats up faster
-    if (heroCanvas) {
-      (heroCanvas as HTMLElement).style.transform = `translateY(${scrollY * 0.4}px)`;
-    }
     
     // Content fades out and moves up
     if (heroContent) {

@@ -242,6 +242,11 @@ class Neko {
     if (!this.nekoElement) return;
     this.nekoElement.style.left = `${this.posX - NEKO_WIDTH/2}px`;
     this.nekoElement.style.top = `${this.posY - NEKO_HEIGHT/2}px`;
+    
+    // 更新全局小猫位置，供波纹效果使用
+    if (typeof window !== 'undefined') {
+      window.NEKO_POSITION = { x: this.posX, y: this.posY };
+    }
   }
 
   idleBehavior() {

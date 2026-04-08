@@ -5,6 +5,7 @@ interface Props {
 }
 
 import Oneko from '../components/Oneko.astro';
+import RippleText from '../components/RippleText.astro';
 import { navItems, profile } from '../data/content';
 
 const { title, currentPage = 'home' } = Astro.props;
@@ -50,6 +51,7 @@ const isHomePage = currentPage === 'home';
   </head>
   <body class="min-h-screen flex flex-col">
     <Oneko />
+    {isHomePage && <RippleText />}
     
     <!-- Scroll Progress Indicator -->
     <div id="scroll-progress" class="fixed top-0 left-0 right-0 h-0.5 bg-accent/50 z-[60] origin-left scale-x-0"></div>
