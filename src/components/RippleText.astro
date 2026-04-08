@@ -53,21 +53,36 @@ class TextParticle {
     this.color = `rgba(129, 140, 248, ${this.opacity})`;
   }
   
-  update(nekoX: number, nekoY: number) {
+  update(nekoX: number, nekoY: number, mouseX: number, mouseY: number) {
     // 计算与小猫的距离
-    const dx = this.x - nekoX;
-    const dy = this.y - nekoY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
+    const dxNeko = this.x - nekoX;
+    const dyNeko = this.y - nekoY;
+    const distNeko = Math.sqrt(dxNeko * dxNeko + dyNeko * dyNeko);
     
-    // 影响半径
-    const radius = 120;
+    // 计算与鼠标的距离
+    const dxMouse = this.x - mouseX;
+    const dyMouse = this.y - mouseY;
+    const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
     
-    if (dist < radius) {
-      // 推力 - 距离越近，推力越大
-      const force = (radius - dist) / radius;
-      const angle = Math.atan2(dy, dx);
+    // 小猫影响半径（更大）
+    const nekoRadius = 120;
+    // 鼠标影响半径（稍小）
+    const mouseRadius = 80;
+    
+    // 小猫推力
+    if (distNeko < nekoRadius) {
+      const force = (nekoRadius - distNeko) / nekoRadius;
+      const angle = Math.atan2(dyNeko, dxNeko);
       this.vx += Math.cos(angle) * force * 2;
       this.vy += Math.sin(angle) * force * 2;
+    }
+    
+    // 鼠标推力（较弱）
+    if (distMouse < mouseRadius) {
+      const force = (mouseRadius - distMouse) / mouseRadius;
+      const angle = Math.atan2(dyMouse, dxMouse);
+      this.vx += Math.cos(angle) * force * 1.2;
+      this.vy += Math.sin(angle) * force * 1.2;
     }
     
     // 弹簧力 - 回到原点
@@ -112,17 +127,31 @@ class DotParticle {
     this.originY = y;
   }
   
-  update(nekoX: number, nekoY: number) {
-    const dx = this.x - nekoX;
-    const dy = this.y - nekoY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    const radius = 80;
+  update(nekoX: number, nekoY: number, mouseX: number, mouseY: number) {
+    // 小猫影响
+    const dxNeko = this.x - nekoX;
+    const dyNeko = this.y - nekoY;
+    const distNeko = Math.sqrt(dxNeko * dxNeko + dyNeko * dyNeko);
+    const nekoRadius = 80;
     
-    if (dist < radius) {
-      const force = (radius - dist) / radius;
-      const angle = Math.atan2(dy, dx);
+    if (distNeko < nekoRadius) {
+      const force = (nekoRadius - distNeko) / nekoRadius;
+      const angle = Math.atan2(dyNeko, dxNeko);
       this.vx += Math.cos(angle) * force * 1.5;
       this.vy += Math.sin(angle) * force * 1.5;
+    }
+    
+    // 鼠标影响
+    const dxMouse = this.x - mouseX;
+    const dyMouse = this.y - mouseY;
+    const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+    const mouseRadius = 60;
+    
+    if (distMouse < mouseRadius) {
+      const force = (mouseRadius - distMouse) / mouseRadius;
+      const angle = Math.atan2(dyMouse, dxMouse);
+      this.vx += Math.cos(angle) * force * 1;
+      this.vy += Math.sin(angle) * force * 1;
     }
     
     // 弹簧力
@@ -185,20 +214,21 @@ function initParticles() {
 function animate() {
   ctx.clearRect(0, 0, width, height);
   
-  // 获取小猫位置
+  // 获取小猫和鼠标位置
   const nekoPos = window.NEKO_POSITION || { x: width / 2, y: height / 2 };
+  const mousePos = window.MOUSE_POSITION || { x: width / 2, y: height / 2 };
   
   // 绘制网格点
   ctx.globalAlpha = 0.08;
   ctx.fillStyle = '#818cf8';
   for (const dot of dotParticles) {
-    dot.update(nekoPos.x, nekoPos.y);
+    dot.update(nekoPos.x, nekoPos.y, mousePos.x, mousePos.y);
     dot.draw(ctx);
   }
   
   // 绘制文字粒子
   for (const particle of textParticles) {
-    particle.update(nekoPos.x, nekoPos.y);
+    particle.update(nekoPos.x, nekoPos.y, mousePos.x, mousePos.y);
     particle.draw(ctx);
   }
   
