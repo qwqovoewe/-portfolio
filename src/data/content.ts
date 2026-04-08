@@ -38,7 +38,7 @@ export const profile = {
 
   // ========== 个人简介 ==========
   bio: [
-    "你好！我是王睿轩，华中农业大学计算机科学与技术专业本科生，目前在小米红书担任后端开发实习生。",
+    "你好！我是王睿轩，华中农业大学计算机科学与技术专业本科生，目前在小红书担任后端开发实习生。",
     "我专注于高并发架构设计与性能优化。在实习期间，我主导了慢SQL治理和全量SQL分析系统的设计与落地，通过多轮优化将系统性能提升 2-3 倍，支撑日均百万级数据处理。",
     "技术栈方面，我熟练掌握 Java、MySQL、Redis、Kafka 等后端技术，有丰富的大规模系统设计与落地经验。同时也在学习 Go 语言和云原生技术。",
     "工作之余，我担任沸点工作室总负责人，负责技术人才培养和项目对接，享受分享技术知识和帮助他人成长的过程。"
@@ -69,9 +69,7 @@ export const projects = [
     highlights: [
       "高性能聚合器：基于时间窗口轮转实现分层聚合结构，聚合耗时下降60%（830ms→340ms）",
       "Kafka消费一致性：采用Hash分片与Sticky+StaticMember消费策略，保障多Pod聚合一致性",
-      "平台能力闭环：实现动态通知、静默、白名单，集成索引推荐与根因定位",
-      "整体规模：覆盖900+集群，Kafka写入流量100+MB/s，峰值7K+ Event QPS"
-    ],
+      "平台能力闭环：实现动态通知、静默、白名单，集成索引推荐与根因定位"    ],
     techStack: ["Java", "Kafka", "ClickHouse", "Redis"],
   },
   {
@@ -85,9 +83,10 @@ export const projects = [
       "消费链路调优：通过PProf定位瓶颈，单Pod吞吐提升2倍（12→25MB/s），端到端延迟<1min",
       "MQ发送优化：Protobuf序列化+LZ4压缩，单分片稳定处理4K+ Event QPS",
       "架构设计：Reader/Sender架构，全链路支持水平扩展",
+      "整体规模：覆盖900+集群，Kafka写入流量100+MB/s，峰值7K+ Event QPS",
       "数据降噪：降低数据噪声1/3+，增量/日报双轨告警接入IM触达到人"
     ],
-    techStack: ["Java", "Protobuf", "LZ4", "ClickHouse"],
+    techStack: ["Java", "Kafka", "Protobuf", "LZ4", "ClickHouse"],
   },
   {
     name: "狮山健康小程序",
@@ -138,22 +137,22 @@ export const milestones = [
   {
     date: "2024.10",
     title: "狮山健康小程序立项",
-    description: "获得华中农业大学认证，集成AI健康管理功能。",
+    description: "获得华中农业大学认证，集成AI健康管理功能，设计大赛中南赛区省赛一等奖。",
   },
   {
     date: "2025.05",
     title: "代码知识库平台开发",
-    description: "独立完成TB级代码存储库平台，性能优化成果显著。",
+    description: "TB级代码存储库平台开发检索与导入导出功能，性能优化成果显著。",
   },
   {
     date: "2025.09",
     title: "入职小红书",
-    description: "加入关系型数据库平台研发组，参与核心基础设施建设。",
+    description: "加入关系型数据库平台研发组，参与数据自治系统采集等核心基础设施建设，DTS告警，openClaw的skills开发等工作。",
   },
   {
     date: "2026.03",
     title: "实习成果总结",
-    description: "主导慢SQL治理与全量SQL分析，支撑日均百万级数据处理。",
+    description: "主导慢SQL治理二期与全量SQL分析，支撑日均百万级数据处理。dts1.0与2.0冲突告警与复查链路落地。",
   },
 ];
 
