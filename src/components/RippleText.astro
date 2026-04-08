@@ -49,7 +49,7 @@ class TextParticle {
     this.originX = x;
     this.originY = y;
     this.fontSize = 12 + Math.random() * 16;
-    this.opacity = 0.06 + Math.random() * 0.1;
+    this.opacity = 0.12 + Math.random() * 0.18; // 提高亮度
     this.color = `rgba(129, 140, 248, ${this.opacity})`;
   }
   
@@ -87,7 +87,7 @@ class TextParticle {
   draw(ctx: CanvasRenderingContext2D) {
     // 根据速度调整透明度
     const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-    const dynamicOpacity = Math.min(this.opacity + speed * 0.02, 0.3);
+    const dynamicOpacity = Math.min(this.opacity + speed * 0.03, 0.6);
     
     ctx.globalAlpha = dynamicOpacity;
     ctx.font = `${this.fontSize}px "Inter", system-ui, sans-serif`;
@@ -162,8 +162,8 @@ function initParticles() {
   textParticles.length = 0;
   dotParticles.length = 0;
   
-  // 文字粒子
-  const textCount = Math.min(Math.floor((width * height) / 35000), 25);
+  // 文字粒子 - 增加数量
+  const textCount = Math.min(Math.floor((width * height) / 25000), 40);
   for (let i = 0; i < textCount; i++) {
     const text = phrases[Math.floor(Math.random() * phrases.length)];
     textParticles.push(new TextParticle(
@@ -189,7 +189,7 @@ function animate() {
   const nekoPos = window.NEKO_POSITION || { x: width / 2, y: height / 2 };
   
   // 绘制网格点
-  ctx.globalAlpha = 0.04;
+  ctx.globalAlpha = 0.08;
   ctx.fillStyle = '#818cf8';
   for (const dot of dotParticles) {
     dot.update(nekoPos.x, nekoPos.y);
