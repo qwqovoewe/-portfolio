@@ -333,4 +333,22 @@ export const articles = [
     description: "AI 每周层出不穷，校内与企业开发差距越来越大。从技术栈、开发模式到学习渠道，全面梳理 AI 时代同学的升级方向。",
     tags: ["AI", "学习路线", "沸点工作室"],
   },
+  {
+    label: "技术实践",
+    title: "从Pipeline到ReAct：构建Redis告警根因定位Agent的实践与思考",
+    platform: "博客",
+    url: "/-portfolio/blog/redis-agent",
+    date: "2026.04",
+    description: "从Pipeline硬编排到ReAct Agent的演进历程，详解工具集设计、System Prompt注入领域经验、ReAct循环实现，以及真实告警分析案例。准确率从58%提升到82%。",
+    tags: ["AI Agent", "ReAct", "Redis", "LLM"],
+  },
+  {
+    label: "技术实践",
+    title: "Binlog采集链路调优实战：从12MB/s到25MB/s的性能突破",
+    platform: "博客",
+    url: "/-portfolio/blog/binlog-pipeline",
+    date: "2026.04",
+    description: "四轮渐进式性能优化实录：sync.Pool池化、流水线并行、Kafka批量发送、无锁环形缓冲区，配合pprof度量驱动，吞吐提升112%。",
+    tags: ["性能优化", "Go", "Kafka", "Binlog"],
+  },
 ];

@@ -6,6 +6,11 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://qwqovoewe.github.io',
   base: '/-portfolio',
+  markdown: {
+    shikiConfig: {
+      theme: 'github-dark-default',
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },
