@@ -63,40 +63,10 @@ class FormParticle {
     this.y = targetY + Math.sin(angle) * dist;
   }
 
-  update(nekoX: number, nekoY: number, mouseX: number, mouseY: number) {
-    // 弹簧力 → 目标位置
-    const springK = 0.05;
-    this.vx += (this.targetX - this.x) * springK;
-    this.vy += (this.targetY - this.y) * springK;
-
-    // 小猫排斥
-    const dxN = this.x - nekoX;
-    const dyN = this.y - nekoY;
-    const distN = Math.sqrt(dxN * dxN + dyN * dyN);
-    if (distN < 140) {
-      const f = (140 - distN) / 140;
-      const a = Math.atan2(dyN, dxN);
-      this.vx += Math.cos(a) * f * 3;
-      this.vy += Math.sin(a) * f * 3;
-    }
-
-    // 鼠标排斥
-    const dxM = this.x - mouseX;
-    const dyM = this.y - mouseY;
-    const distM = Math.sqrt(dxM * dxM + dyM * dyM);
-    if (distM < 100) {
-      const f = (100 - distM) / 100;
-      const a = Math.atan2(dyM, dxM);
-      this.vx += Math.cos(a) * f * 2;
-      this.vy += Math.sin(a) * f * 2;
-    }
-
-    // 阻尼
-    this.vx *= 0.92;
-    this.vy *= 0.92;
-
-    this.x += this.vx;
-    this.y += this.vy;
+  update() {
+    // 线性插值，平滑趋近目标，无震荡
+    this.x += (this.targetX - this.x) * 0.05;
+    this.y += (this.targetY - this.y) * 0.05;
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -301,12 +271,110 @@ const phrases = [
   'O(log n)', '// TODO', '0xCAFE', 'null', '42', 'NaN',
 ];
 
+
+// ============ 二进制代码雨 + 彩蛋 ============
+const rainFontSize = 14;
+const rainFont = `${rainFontSize}px "Courier New", "SF Mono", monospace`;
+const rainCharH = 18;
+const easterEggs = [':)', ':D', '^_^', '<3', ';)', 'XD', 'ERROR', '404', 'NULL', 'BUG', 'OOPS', 'HELP', 'CAFE', '0xFF'];
+
+interface RainColumn {
+  x: number;
+  chars: string[];     // 每行的字符
+  head: number;        // 头部行索引
+  length: number;      // 尾巴长度
+  speed: number;       // 每帧前进概率
+  eggRow: number;      // 彩蛋所在行（-1 表示无）
+  eggText: string;     // 彩蛋文字
+}
+
+const rainColumns: RainColumn[] = [];
+
+function initCodeRain() {
+  rainColumns.length = 0;
+  const colSpacing = rainFontSize + 4;
+  const cols = Math.floor(width / colSpacing);
+  const rows = Math.ceil(height / rainCharH) + 2;
+
+  for (let i = 0; i < cols; i++) {
+    const chars: string[] = [];
+    for (let j = 0; j < rows; j++) {
+      chars.push(Math.random() < 0.5 ? '0' : '1');
+    }
+
+    // ~5% 的列带彩蛋
+    const hasEgg = Math.random() < 0.05;
+
+    rainColumns.push({
+      x: i * colSpacing + colSpacing / 2,
+      chars,
+      head: Math.floor(Math.random() * rows),
+      length: 8 + Math.floor(Math.random() * 16),
+      speed: 0.02 + Math.random() * 0.04,
+      eggRow: hasEgg ? Math.floor(Math.random() * rows) : -1,
+      eggText: easterEggs[Math.floor(Math.random() * easterEggs.length)],
+    });
+  }
+}
+
+function drawCodeRain(ctx: CanvasRenderingContext2D) {
+  ctx.font = rainFont;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+
+  const rows = rainColumns[0]?.chars.length || 0;
+
+  for (const col of rainColumns) {
+    if (Math.random() < col.speed) {
+      col.head = (col.head + 1) % rows;
+      // 头部经过时刷新字符
+      col.chars[col.head] = Math.random() < 0.5 ? '0' : '1';
+      // 小概率刷新彩蛋
+      if (Math.random() < 0.003) {
+        col.eggRow = col.head;
+        col.eggText = easterEggs[Math.floor(Math.random() * easterEggs.length)];
+      }
+    }
+
+    for (let t = 0; t < col.length; t++) {
+      const rowIdx = (col.head - t + rows) % rows;
+      const y = rowIdx * rainCharH;
+      if (y < -rainCharH || y > height) continue;
+
+      const fade = 1 - t / col.length;
+
+      // 是否是彩蛋行
+      if (rowIdx === col.eggRow && t < col.length * 0.7) {
+        ctx.fillStyle = '#c4b5fd'; // 紫色高亮
+        ctx.globalAlpha = Math.min(fade * 0.35, 0.35);
+        ctx.fillText(col.eggText, col.x, y);
+        continue;
+      }
+
+      if (t === 0) {
+        ctx.fillStyle = '#a5b4fc';
+        ctx.globalAlpha = 0.3;
+      } else {
+        ctx.fillStyle = '#818cf8';
+        ctx.globalAlpha = fade * 0.15;
+      }
+
+      if (ctx.globalAlpha < 0.01) continue;
+      ctx.fillText(col.chars[rowIdx], col.x, y);
+    }
+  }
+
+  ctx.textAlign = 'start';
+}
+
+
 function resize() {
   width = window.innerWidth;
   height = window.innerHeight;
   canvas.width = width * dpr;
   canvas.height = height * dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  initCodeRain();
   initParticles();
 }
 
@@ -364,6 +432,9 @@ function animate() {
     formParticles.length = 0; // 释放内存
   }
 
+  // ---- 绘制代码雨 ----
+  drawCodeRain(ctx);
+
   // ---- 绘制网格点 ----
   ctx.globalAlpha = 0.08;
   ctx.fillStyle = '#818cf8';
@@ -389,7 +460,7 @@ function animate() {
       }
     }
     for (const p of formParticles) {
-      p.update(nekoPos.x, nekoPos.y, mousePos.x, mousePos.y);
+      p.update();
       p.draw(ctx);
     }
   }
