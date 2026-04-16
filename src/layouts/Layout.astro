@@ -71,8 +71,9 @@ const canonicalUrl = Astro.url ? `${siteOrigin}${Astro.url.pathname}` : `${siteO
     </div>
     
     <!-- 传递当前页面信息给客户端脚本 -->
-    <script define:vars={{ isHomePage }}>
+    <script define:vars={{ isHomePage, base }}>
       window.IS_HOME_PAGE = isHomePage;
+      window.BASE_URL = base;
     </script>
     
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-bg/60 backdrop-blur-xl shadow-sm shadow-black/5">
@@ -211,7 +212,8 @@ const canonicalUrl = Astro.url ? `${siteOrigin}${Astro.url.pathname}` : `${siteO
         el.scrollIntoView({ behavior: 'smooth' });
       } else {
         // 在其他页面，跳转到主页对应位置
-        window.location.href = '/' + (sectionId ? `#${sectionId}` : '');
+        const baseUrl = (window as any).BASE_URL || '/';
+        window.location.href = baseUrl + (sectionId ? `#${sectionId}` : '');
       }
     });
   });
