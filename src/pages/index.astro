@@ -240,6 +240,25 @@ const projectsData = projects.map(p => ({
         </div>
 
         <div class="section-animate">
+          <h3 class="text-2xl font-semibold mb-6">教育背景</h3>
+          <div class="flex items-start gap-5 p-6 rounded-xl border border-border bg-surface">
+            <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center">
+              <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <h4 class="text-lg font-semibold">{profile.education.school}</h4>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">{profile.education.level}</span>
+              </div>
+              <p class="text-text-muted">{profile.education.major}</p>
+              <p class="text-sm text-text-muted font-mono mt-1">{profile.education.period}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-animate">
           <h3 class="text-2xl font-semibold mb-6">技术栈</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Object.entries(techSkills).map(([category, data], i) => (
