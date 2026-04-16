@@ -177,8 +177,7 @@ const projectsData = projects.map(p => ({
                   <div class="atropos-inner" style="overflow: visible;">
                     <a
                       href={article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      {...(article.url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       class="group flex gap-5 p-5 rounded-xl border border-border bg-surface hover:border-accent/30 hover:bg-surface-hover transition-all"
                     >
                       <div class="flex-shrink-0 pt-0.5" data-atropos-offset="2">
