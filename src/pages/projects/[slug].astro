@@ -17,7 +17,7 @@ const relevantSkills = Object.entries(techSkills).filter(([_, data]) =>
 );
 ---
 
-<Layout title={`${project.name} | Portfolio`} currentPage="projects">
+<Layout title={`${project.name} | Portfolio`} description={project.description} currentPage="projects">
   <div class="mx-auto max-w-4xl px-6 py-20">
 
     {/* Back */}

@@ -1,18 +1,25 @@
 ---
 interface Props {
   title: string;
-  currentPage?: string; // 用于标识当前页面
+  description?: string;
+  currentPage?: string;
 }
 
 import Oneko from '../components/Oneko.astro';
 import RippleText from '../components/RippleText.astro';
 import { navItems, profile } from '../data/content';
 
-const { title, currentPage = 'home' } = Astro.props;
+const { title, description, currentPage = 'home' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
 // 判断是否在主页
 const isHomePage = currentPage === 'home';
+
+const defaultDescription = '王睿轩 - 后端工程师 | 华中农业大学 | 专注于高并发架构设计与性能优化';
+const pageDescription = description || defaultDescription;
+const pageTitle = title;
+const siteOrigin = 'https://qwqovoewe.github.io';
+const canonicalUrl = Astro.url ? `${siteOrigin}${Astro.url.pathname}` : `${siteOrigin}/-portfolio/`;
 ---
 
 <!doctype html>
@@ -22,27 +29,27 @@ const isHomePage = currentPage === 'home';
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    
+    <title>{pageTitle}</title>
+
     <!-- SEO Meta Tags -->
-    <meta name="description" content="王睿轩 - 后端工程师 | 小红书实习 | 华中农业大学 | 专注于高并发架构设计与性能优化，慢SQL治理、全量SQL分析系统开发者">
-    <meta name="keywords" content="王睿轩,后端开发,Java,高并发,小红书实习,简历,Portfolio,华中农业大学">
+    <meta name="description" content={pageDescription}>
+    <meta name="keywords" content="王睿轩,后端开发,Java,高并发,Redis,Kafka,简历,Portfolio,华中农业大学">
     <meta name="author" content="王睿轩">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://qwqovoewe.github.io/-portfolio/">
-    
+    <link rel="canonical" href={canonicalUrl}>
+
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://qwqovoewe.github.io/-portfolio/">
-    <meta property="og:title" content="王睿轩 | 后端工程师 Portfolio">
-    <meta property="og:description" content="华中农业大学本科生，小红书后端开发实习生，专注于高并发架构设计与性能优化">
+    <meta property="og:url" content={canonicalUrl}>
+    <meta property="og:title" content={pageTitle}>
+    <meta property="og:description" content={pageDescription}>
     <meta property="og:locale" content="zh_CN">
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="王睿轩 | 后端工程师 Portfolio">
-    <meta name="twitter:description" content="华中农业大学本科生，小红书后端开发实习生，专注于高并发架构设计与性能优化">
-    
+    <meta name="twitter:title" content={pageTitle}>
+    <meta name="twitter:description" content={pageDescription}>
+
     <!-- Theme Color -->
     <meta name="theme-color" content="#818cf8">
     <meta name="msapplication-TileColor" content="#818cf8">
