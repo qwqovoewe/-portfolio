@@ -15,6 +15,7 @@
     "@chenglou/pretext": "^0.0.3",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.1.2",
+    "atropos": "^2.0.2",
     "tailwindcss": "^4.2.2"
   },
   "overrides": {
