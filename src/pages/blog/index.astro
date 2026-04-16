@@ -1,49 +1,50 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-
-const posts = [
-  {
-    title: '用 Astro 构建现代静态站点',
-    description: '探索 Astro 的 Islands 架构，如何在保持极致性能的同时实现丰富的交互体验。',
-    date: '2026-03-20',
-    tags: ['Astro', '前端'],
-    readTime: '5 min',
-  },
-  {
-    title: 'TypeScript 类型体操入门',
-    description: '从实际场景出发，学习 TypeScript 高级类型技巧，让类型系统成为你的开发助手。',
-    date: '2026-03-10',
-    tags: ['TypeScript', '教程'],
-    readTime: '8 min',
-  },
-];
+import { articles } from '../../data/content';
 ---
 
-<Layout title="博客 | Portfolio">
+<Layout title="文章 | Portfolio">
   <section class="mx-auto max-w-3xl px-6 py-20">
-    <h1 class="text-4xl font-bold tracking-tight mb-2">博客</h1>
-    <p class="text-text-muted mb-12">记录学习心得与技术探索。</p>
+    <h1 class="text-4xl font-bold tracking-tight mb-2">文章</h1>
+    <p class="text-text-muted mb-12">记录技术思考与分享，发布于不同平台。</p>
 
-    <div class="space-y-6">
-      {posts.map((post) => (
-        <article class="group rounded-xl border border-border bg-surface p-6 transition-all hover:border-accent/30 hover:bg-surface-hover">
-          <div class="flex items-center gap-3 text-xs text-text-muted mb-3">
-            <time>{post.date}</time>
-            <span class="w-1 h-1 rounded-full bg-border"></span>
-            <span>{post.readTime}</span>
+    <div class="space-y-5">
+      {articles.map((article) => (
+        <a
+          href={article.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex gap-5 p-5 rounded-xl border border-border bg-surface hover:border-accent/30 hover:bg-surface-hover transition-all"
+        >
+          <div class="flex-shrink-0 pt-0.5">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-accent/10 text-accent text-xs font-bold border border-accent/20">
+              {article.platform.charAt(0)}
+            </span>
           </div>
-          <h2 class="text-xl font-semibold mb-2 group-hover:text-accent transition-colors">
-            {post.title}
-          </h2>
-          <p class="text-text-muted leading-relaxed mb-4">{post.description}</p>
-          <div class="flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
-                {tag}
-              </span>
-            ))}
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              {article.label && (
+                <span class="text-xs text-text-muted">{article.label}</span>
+              )}
+              <span class="text-xs px-1.5 py-0.5 rounded bg-surface-hover border border-border text-text-muted">{article.platform}</span>
+              <span class="text-xs text-text-muted font-mono">{article.date}</span>
+            </div>
+            <h2 class="text-lg font-semibold mb-1.5 group-hover:text-accent transition-colors leading-snug">
+              {article.title}
+            </h2>
+            <p class="text-sm text-text-muted leading-relaxed mb-3">{article.description}</p>
+            <div class="flex flex-wrap gap-1.5">
+              {article.tags.map((tag) => (
+                <span class="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">{tag}</span>
+              ))}
+            </div>
           </div>
-        </article>
+          <div class="flex-shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 17L17 7M17 7H7M17 7v10" />
+            </svg>
+          </div>
+        </a>
       ))}
     </div>
   </section>

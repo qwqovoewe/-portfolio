@@ -7,6 +7,7 @@ export const navItems = [
   { name: "首页", href: "#hero" },
   { name: "作品集", href: "#projects" },
   { name: "时间线", href: "#timeline" },
+  { name: "文章", href: "#articles" },
   { name: "关于", href: "#about" },
 ];
 
@@ -56,6 +57,15 @@ export const profile = {
 // 项目经历
 // ============================================
 
+// 截图命名规范：
+//   public/screenshots/{slug}/{序号}-{功能描述}.{ext}
+//   序号从 01 开始，两位数字，例如：
+//     01-overview.png      总览/首页
+//     02-dashboard.png     仪表盘
+//     03-detail.png        详情页
+//   支持格式：png / jpg / webp（推荐 png 或 webp）
+//   建议宽度：1280px 或 750px（小程序截图）
+
 export const projects = [
   {
     slug: "slow-sql",
@@ -65,6 +75,8 @@ export const projects = [
     period: "2025.09 - 2026.03",
     role: "项目主导",
     description: "设计聚合+告警+持久化流水线，聚合耗时下降60%，并发QPS提升2.1倍，覆盖900+集群。",
+    // 截图放 public/screenshots/slow-sql/ 目录下，按命名规范添加到下方数组
+    screenshots: [] as { src: string; caption: string }[],
     overview: "设计并落地聚合+告警+持久化流水线，补齐告警订阅与巡检功能，形成优化闭环。覆盖 900+ 集群，支撑日均百万级慢查询数据处理。",
     highlights: [
       "高性能聚合器：基于时间窗口轮转实现分层聚合结构，优化并发模型降低热点Key锁竞争，聚合耗时下降60%（830ms→340ms），并发QPS提升2.1倍",
@@ -76,6 +88,7 @@ export const projects = [
   },
   {
     slug: "binlog-sql",
+    // 截图放 public/screenshots/binlog-sql/ 目录下
     name: "全量SQL分析系统",
     type: "实习项目",
     company: "小红书 · 关系型数据库平台研发组",
@@ -90,6 +103,7 @@ export const projects = [
       "异步聚合+核查：降低数据噪声1/3+，增量/日报双轨告警接入IM触达到人，增量收口效率显著提升",
     ],
     techStack: ["Java", "Kafka", "Protobuf", "LZ4", "ClickHouse"],
+    screenshots: [] as { src: string; caption: string }[],
   },
   {
     slug: "health-miniapp",
@@ -99,7 +113,7 @@ export const projects = [
     period: "2024.10 - 2025.03",
     role: "独立开发",
     description: "AI健康管理小程序，集成Qwen实现健康问答，WebSocket流式输出TTFT≈490ms，获校级认证。",
-    overview: "基于微信生态的AI健康管理程序，提供健康建议、饮食评分、运动打卡、排行榜等功能，生成个性化建议，激励健康习惯养成。",
+    overview: "基于微信生态的AI健康管理程序，提供健康建议、饮食评分、运动打卡、排行榜等功能，生成个性化建议，激励健康习惽养成。",
     highlights: [
       "集成Qwen+菜品识别API实现健康问答与营养分析，通过Prompt+样本微调，问答准确率70%→80%，菜品分析准确率提升15%",
       "WebSocket实现AI回答流式输出，TTFT≈490ms（30轮），用写时删除与TTL控制策略，降低大模型调用频率",
@@ -107,6 +121,9 @@ export const projects = [
       "微信生态对接：ThreadLocal传递用户信息，实现微信快捷登录，获取用户步数、定位与跑步速率等运动数据",
     ],
     techStack: ["Spring Boot", "WebSocket", "Qwen", "Redis", "MySQL"],
+    // 截图放 public/screenshots/health-miniapp/ 目录下
+    // 小程序截图建议宽度 750px（iPhone 标准）
+    screenshots: [] as { src: string; caption: string }[],
   },
   {
     slug: "code-knowledge",
@@ -124,6 +141,8 @@ export const projects = [
       "双线程池优化导出，160W行CSV碎片化导出<3min，分块LOAD+Bulk API提升入库效率（相比批处理百倍提升）",
     ],
     techStack: ["Spring Boot", "Elasticsearch", "Redis", "NIO"],
+    // 截图放 public/screenshots/code-knowledge/ 目录下
+    screenshots: [] as { src: string; caption: string }[],
   },
 ];
 
@@ -239,3 +258,20 @@ export const techSkills = {
     }
   },
 };
+
+
+// ============================================
+// 文章列表
+// ============================================
+
+export const articles = [
+  {
+    label: "写给沸点同学的",
+    title: "AI 时代，你的学习路线该变了",
+    platform: "飞书文档",
+    url: "https://qwqovoewe.feishu.cn/wiki/CfS5wdUIui5PIfklWsjcEf8lnRh",
+    date: "2026.04",
+    description: "AI 每周层出不穷，校内与企业开发差距越来越大。从技术栈、开发模式到学习渠道，全面梳理 AI 时代同学的升级方向。",
+    tags: ["AI", "学习路线", "沸点工作室"],
+  },
+];

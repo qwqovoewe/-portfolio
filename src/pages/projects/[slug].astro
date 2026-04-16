@@ -95,6 +95,34 @@ const relevantSkills = Object.entries(techSkills).filter(([_, data]) =>
           </ul>
         </section>
 
+        {/* Screenshots */}
+        {project.screenshots && project.screenshots.length > 0 && (
+          <section>
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+              <span class="w-1 h-5 bg-accent rounded-full inline-block"></span>
+              项目截图
+            </h2>
+            <div class="flex gap-4 overflow-x-auto pb-3 snap-x snap-mandatory">
+              {project.screenshots.map((shot) => (
+                <a href={shot.src} target="_blank" rel="noopener"
+                  class="flex-shrink-0 snap-start group">
+                  <div class="overflow-hidden rounded-xl border border-border bg-surface hover:border-accent/40 transition-colors">
+                    <img
+                      src={shot.src}
+                      alt={shot.caption}
+                      class="h-52 w-auto object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  </div>
+                  {shot.caption && (
+                    <p class="text-xs text-center mt-2 text-text-muted">{shot.caption}</p>
+                  )}
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
       </div>
 
       {/* Right: sidebar */}
