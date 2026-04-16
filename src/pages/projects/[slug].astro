@@ -1,0 +1,177 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { projects, techSkills } from '../../data/content';
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+// Find which tech categories this project's stack covers
+const relevantSkills = Object.entries(techSkills).filter(([_, data]) =>
+  data.items.some((item) =>
+    project.techStack.some((t) => item.toLowerCase().includes(t.toLowerCase()) || t.toLowerCase().includes(item.toLowerCase()))
+  )
+);
+---
+
+<Layout title={`${project.name} | Portfolio`} currentPage="projects">
+  <div class="mx-auto max-w-4xl px-6 py-20">
+
+    {/* Back */}
+    <a href={`${base}/projects`}
+      class="inline-flex items-center gap-2 text-sm text-text-muted hover:text-accent transition-colors mb-10 group">
+      <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      返回作品集
+    </a>
+
+    {/* Header */}
+    <div class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        {project.type === "实习项目" && (
+          <span class="px-3 py-1 text-xs font-medium bg-accent/20 text-accent rounded-full">{project.type}</span>
+        )}
+        {project.type !== "实习项目" && (
+          <span class="px-3 py-1 text-xs font-medium bg-surface border border-border text-text-muted rounded-full">{project.type}</span>
+        )}
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">{project.name}</h1>
+
+      <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-text-muted">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          {project.role}
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          {project.period}
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+          {project.company}
+        </span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      {/* Left: main content */}
+      <div class="lg:col-span-2 space-y-10">
+
+        {/* Overview */}
+        <section>
+          <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+            <span class="w-1 h-5 bg-accent rounded-full inline-block"></span>
+            项目概述
+          </h2>
+          <p class="text-text-muted leading-relaxed text-base">{project.overview}</p>
+        </section>
+
+        {/* Highlights */}
+        <section>
+          <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+            <span class="w-1 h-5 bg-accent rounded-full inline-block"></span>
+            核心成果
+          </h2>
+          <ul class="space-y-4">
+            {project.highlights.map((item, i) => (
+              <li class="flex gap-4 p-4 rounded-xl border border-border bg-surface hover:border-accent/30 transition-colors">
+                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-accent/20 text-accent text-xs font-bold flex items-center justify-center mt-0.5">
+                  {i + 1}
+                </span>
+                <p class="text-text-muted leading-relaxed text-sm">{item}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+      </div>
+
+      {/* Right: sidebar */}
+      <div class="space-y-6">
+
+        {/* Tech stack */}
+        <div class="rounded-xl border border-border bg-surface p-6">
+          <h3 class="text-sm font-semibold text-accent mb-4 uppercase tracking-wider">技术栈</h3>
+          <div class="flex flex-wrap gap-2">
+            {project.techStack.map((t) => (
+              <span class="px-3 py-1.5 text-sm rounded-lg bg-accent/10 text-accent font-medium border border-accent/20">
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Relevant skill categories */}
+        {relevantSkills.length > 0 && (
+          <div class="rounded-xl border border-border bg-surface p-6">
+            <h3 class="text-sm font-semibold text-accent mb-4 uppercase tracking-wider">涉及技能方向</h3>
+            <div class="space-y-3">
+              {relevantSkills.map(([category, data]) => (
+                <div>
+                  <p class="text-sm font-medium mb-1.5">{category}</p>
+                  <div class="flex flex-wrap gap-1.5">
+                    {data.items.map((item) => (
+                      <span class="text-xs px-2 py-0.5 rounded-full bg-surface-hover text-text-muted border border-border">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Quick info */}
+        <div class="rounded-xl border border-border bg-surface p-6 space-y-3 text-sm">
+          <h3 class="text-sm font-semibold text-accent mb-4 uppercase tracking-wider">项目信息</h3>
+          <div class="flex justify-between">
+            <span class="text-text-muted">类型</span>
+            <span class="font-medium">{project.type}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-text-muted">角色</span>
+            <span class="font-medium">{project.role}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-text-muted">周期</span>
+            <span class="font-medium">{project.period}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {/* Other projects */}
+    <div class="mt-16 pt-12 border-t border-border">
+      <h2 class="text-xl font-semibold mb-6">其他项目</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {projects.filter(p => p.slug !== project.slug).map((p) => (
+          <a href={`${base}/projects/${p.slug}`}
+            class="group p-4 rounded-xl border border-border bg-surface hover:border-accent/30 hover:bg-surface-hover transition-all">
+            <p class="text-xs text-text-muted mb-1">{p.type}</p>
+            <h3 class="font-medium group-hover:text-accent transition-colors mb-1">{p.name}</h3>
+            <p class="text-xs text-text-muted">{p.period}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</Layout>
+
+<style>
+  /* Smooth scroll for the whole page */
+  html { scroll-behavior: smooth; }
+</style>

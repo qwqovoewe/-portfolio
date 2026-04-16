@@ -176,7 +176,14 @@ class DotParticle {
 // 粒子数组
 const textParticles: TextParticle[] = [];
 const dotParticles: DotParticle[] = [];
-const phrases = ['Code', 'Design', 'Create', 'Build', 'Ship', 'Learn', 'Explore', 'Dream', '构建', '创造', '探索', 'Java', 'Go', 'Redis', 'Kafka'];
+const phrases = [
+  // 技术术语
+  'JVM', 'AQS', 'CAS', 'MVCC', 'Binlog', 'NIO', 'pprof', 'LZ4', 'gRPC',
+  // AI / ML
+  'LLM', 'RAG', 'Embedding', 'Prompt', 'Transformer', 'Token', 'Fine-tune', 'Vector', 'Attention', 'RLHF',
+  // 彩蛋
+  'O(log n)', '// TODO', '0xCAFE', 'null', '42', 'NaN',
+];
 
 function resize() {
   width = window.innerWidth;

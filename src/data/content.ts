@@ -14,7 +14,7 @@ export const profile = {
   // ========== 基本信息 ==========
   name: "王睿轩",
   nameEn: "Ruixuan Wang",
-  title: "AI全栈开发 / 后端工程师 / 华中农业大学 / 沸点工作室",
+  title: "AI 时代的全栈开发 / 后端工程师 / 华中农业大学 / 沸点工作室",
   
   // ========== 联系方式 ==========
   contact: {
@@ -23,8 +23,6 @@ export const profile = {
       url: "https://github.com/qwqovoewe",
     },
     email: "qq1729524191@163.com",
-    phone: "18004909721",
-    wechat: "18004909721", // 同手机号
   },
 
   // ========== 教育背景 ==========
@@ -38,18 +36,18 @@ export const profile = {
 
   // ========== 个人简介 ==========
   bio: [
-    "你好！我是王睿轩，华中农业大学计算机科学与技术专业本科生，目前在小红书担任后端开发实习生。",
+    "你好！我是王睿轩，华中农业大学计算机科学与技术专业本科生，曾在小红书担任后端开发实习生。",
     "我专注于高并发架构设计与性能优化。在实习期间，我主导了慢SQL治理和全量SQL分析系统的设计与落地，通过多轮优化将系统性能提升 2-3 倍，支撑日均百万级数据处理。",
-    "技术栈方面，我熟练掌握 Java、MySQL、Redis、Kafka 等后端技术，有丰富的大规模系统设计与落地经验。同时也在学习 Go 语言和云原生技术。",
+    "技术栈方面，我熟练掌握 Java、MySQL、Redis、Kafka 等后端技术，有丰富的大规模系统设计与落地经验。同时也在学习 Go 语言和 Agent 相关开发技术。",
     "工作之余，我担任沸点工作室总负责人，负责技术人才培养和项目对接，享受分享技术知识和帮助他人成长的过程。"
   ],
 
   // ========== 荣誉奖项 ==========
   awards: [
-    { name: "中国计算机设计大赛", level: "中南赛区一等奖" },
-    { name: "华中农业大学计算机设计大赛", level: "第十一届二等奖" },
-    { name: "小红书 1024 AI Coding", level: "二等奖" },
-    { name: "CET-4", level: "大学英语四级" },
+    { name: "中国计算机设计大赛", level: "中南赛区一等奖", icon: "🏆" },
+    { name: "华中农业大学计算机设计大赛", level: "第十一届二等奖", icon: "🏆" },
+    { name: "小红书 1024 AI Coding", level: "二等奖", icon: "🏆" },
+    { name: "大学英语四级 CET-4", level: "通过", icon: "✅" },
   ],
 };
 
@@ -60,59 +58,70 @@ export const profile = {
 
 export const projects = [
   {
+    slug: "slow-sql",
     name: "慢SQL治理平台",
     type: "实习项目",
-    company: "小红书",
+    company: "小红书 · 关系型数据库平台研发组",
     period: "2025.09 - 2026.03",
     role: "项目主导",
     description: "设计聚合+告警+持久化流水线，聚合耗时下降60%，并发QPS提升2.1倍，覆盖900+集群。",
+    overview: "设计并落地聚合+告警+持久化流水线，补齐告警订阅与巡检功能，形成优化闭环。覆盖 900+ 集群，支撑日均百万级慢查询数据处理。",
     highlights: [
-      "高性能聚合器：基于时间窗口轮转实现分层聚合结构，聚合耗时下降60%（830ms→340ms）",
-      "Kafka消费一致性：采用Hash分片与Sticky+StaticMember消费策略，保障多Pod聚合一致性",
-      "平台能力闭环：实现动态通知、静默、白名单，集成索引推荐与根因定位"    ],
-    techStack: ["Java", "Kafka", "ClickHouse", "Redis"],
+      "高性能聚合器：基于时间窗口轮转实现分层聚合结构，优化并发模型降低热点Key锁竞争，聚合耗时下降60%（830ms→340ms），并发QPS提升2.1倍",
+      "Kafka消费一致性：采用Hash分片与Sticky+StaticMember消费策略，保障多Pod场景下聚合一致性，降低数据抖动与重复告警",
+      "平台能力闭环：实现动态通知、静默、白名单、自定义配置、跳转详情，集成索引推荐与根因定位",
+      "整体规模：Binlog采集链路覆盖900+集群，Kafka写入流量100+MB/s，单实例峰值7K+ Event QPS",
+    ],
+    techStack: ["Java", "Kafka", "ClickHouse", "Redis", "Spring Boot"],
   },
   {
+    slug: "binlog-sql",
     name: "全量SQL分析系统",
     type: "实习项目",
-    company: "小红书",
+    company: "小红书 · 关系型数据库平台研发组",
     period: "2025.10 - 2026.02",
     role: "负责人",
     description: "Binlog实时采集与持久化，单Pod吞吐提升2倍，峰值7K+ Event QPS，端到端延迟<1min。",
+    overview: "负责Binlog SQL实时采集与持久化，提供TOP SQL定位、表级流量分析等能力，实现SQL写入可观测。",
     highlights: [
-      "消费链路调优：通过PProf定位瓶颈，单Pod吞吐提升2倍（12→25MB/s），端到端延迟<1min",
-      "MQ发送优化：Protobuf序列化+LZ4压缩，单分片稳定处理4K+ Event QPS",
-      "架构设计：Reader/Sender架构，全链路支持水平扩展",
-      "整体规模：覆盖900+集群，Kafka写入流量100+MB/s，峰值7K+ Event QPS",
-      "数据降噪：降低数据噪声1/3+，增量/日报双轨告警接入IM触达到人"
+      "消费链路调优：通过PProf定位瓶颈，采用池化复用、列式插入等优化，单Pod吞吐提升2倍（12→25MB/s），端到端延迟<1min",
+      "MQ发送优化：采用Protobuf序列化+LZ4压缩降低网络开销，环形缓冲区+令牌桶优化文件读取，单分片稳定处理4K+ Event QPS",
+      "整体架构设计：Reader/Sender架构，采集解析与聚合发送解耦，消费侧多Worker并发消费+批量写入，全链路支持水平扩展",
+      "异步聚合+核查：降低数据噪声1/3+，增量/日报双轨告警接入IM触达到人，增量收口效率显著提升",
     ],
     techStack: ["Java", "Kafka", "Protobuf", "LZ4", "ClickHouse"],
   },
   {
+    slug: "health-miniapp",
     name: "狮山健康小程序",
     type: "独立项目",
+    company: "华中农业大学认证项目",
     period: "2024.10 - 2025.03",
     role: "独立开发",
     description: "AI健康管理小程序，集成Qwen实现健康问答，WebSocket流式输出TTFT≈490ms，获校级认证。",
+    overview: "基于微信生态的AI健康管理程序，提供健康建议、饮食评分、运动打卡、排行榜等功能，生成个性化建议，激励健康习惯养成。",
     highlights: [
-      "AI问答：集成Qwen+菜品识别API，问答准确率70%→80%，菜品分析准确率提升15%",
-      "流式输出：WebSocket实现AI回答流式输出，TTFT≈490ms（30轮）",
-      "缓存架构：实现排行榜/浏览量/点赞，Canal+binlog保障缓存一致性",
-      "微信对接：实现微信快捷登录，获取用户步数、定位与跑步速率"
+      "集成Qwen+菜品识别API实现健康问答与营养分析，通过Prompt+样本微调，问答准确率70%→80%，菜品分析准确率提升15%",
+      "WebSocket实现AI回答流式输出，TTFT≈490ms（30轮），用写时删除与TTL控制策略，降低大模型调用频率",
+      "Redis缓存架构：实现排行榜(ZSet)/浏览量(Hash)/点赞(延迟双删)，Canal+binlog保障缓存一致性",
+      "微信生态对接：ThreadLocal传递用户信息，实现微信快捷登录，获取用户步数、定位与跑步速率等运动数据",
     ],
-    techStack: ["Spring Boot", "WebSocket", "Qwen", "Redis"],
+    techStack: ["Spring Boot", "WebSocket", "Qwen", "Redis", "MySQL"],
   },
   {
+    slug: "code-knowledge",
     name: "代码知识库平台",
     type: "独立项目",
+    company: "个人项目",
     period: "2025.05 - 2025.07",
     role: "独立开发",
     description: "TB级代码存储库平台，ES双索引多维检索，160W行CSV导出<3min，性能提升百倍。",
+    overview: "面向TB级代码项目的代码存储库平台，提供大数据导入导出、多维检索、自动化标签等功能。",
     highlights: [
-      "ES双索引：满足项目与代码双重检索，实现多维度检索和关键词查询",
-      "断点续传：基于Redis Bitmap/Hash实现异步任务进度条和断点续传",
-      "性能优化：NIO零拷贝优化文件下载，CPU与IO负载分别降低10%和8%",
-      "批量导入：160W行CSV导出<3min，相比批处理百倍提升"
+      "基于ES双索引（project/code）满足项目与代码双重检索，实现多维度检索和关键词查询",
+      "用Scroll API优化深度分页导出性能，基于Redis Bitmap/Hash实现异步任务进度条和导入导出断点续传",
+      "用LRU Cache实现导出数据去重避免OOM风险，用NIO零拷贝优化文件下载，CPU与IO负载分别降低10%和8%",
+      "双线程池优化导出，160W行CSV碎片化导出<3min，分块LOAD+Bulk API提升入库效率（相比批处理百倍提升）",
     ],
     techStack: ["Spring Boot", "Elasticsearch", "Redis", "NIO"],
   },
@@ -126,33 +135,45 @@ export const projects = [
 export const milestones = [
   {
     date: "2023.09",
+    icon: "🌱",
     title: "进入华中农业大学",
     description: "计算机科学与技术专业，开始系统学习计算机基础课程。",
   },
   {
     date: "2024.03",
+    icon: "🔥",
     title: "担任沸点工作室总负责人",
     description: "负责技术人才培养、项目对接与团队管理。",
   },
   {
     date: "2024.10",
+    icon: "🏆",
     title: "狮山健康小程序立项",
     description: "获得华中农业大学认证，集成AI健康管理功能，设计大赛中南赛区省赛一等奖。",
   },
   {
     date: "2025.05",
+    icon: "💡",
     title: "代码知识库平台开发",
     description: "TB级代码存储库平台开发检索与导入导出功能，性能优化成果显著。",
   },
   {
     date: "2025.09",
+    icon: "🚀",
     title: "入职小红书",
     description: "加入关系型数据库平台研发组，参与数据自治系统采集等核心基础设施建设，DTS告警，openClaw的skills开发等工作。",
   },
   {
     date: "2026.03",
+    icon: "✨",
     title: "实习成果总结",
     description: "主导慢SQL治理二期与全量SQL分析，支撑日均百万级数据处理。dts1.0与2.0冲突告警与复查链路落地。",
+  },
+  {
+    date: "2026.04",
+    icon: "🎓",
+    title: "告别小红书",
+    description: "圆满完成实习，离开小红书关系型数据库平台研发组，带着高并发系统设计与大规模数据处理的实战经验继续前行。",
   },
 ];
 
@@ -172,12 +193,12 @@ export const techSkills = {
     }
   },
   "数据库": {
-    items: ["MySQL", "Redis", "ClickHouse", "Kafka"],
+    items: ["MySQL", "Redis", "ClickHouse", "Elasticsearch"],
     details: {
       "MySQL": "熟悉事务原理、锁机制、MVCC、索引优化、慢SQL分析、主从复制",
       "Redis": "熟练使用各种数据结构，了解持久化、哨兵、集群、缓存穿透/雪崩解决方案",
       "ClickHouse": "有实际使用经验，了解列式存储、聚合查询优化、分区策略",
-      "Kafka": "熟悉消息队列模型、分区副本、消费者组、高吞吐读写实践",
+      "Elasticsearch": "全文检索、聚合查询、索引设计、性能优化",
     }
   },
   "框架": {
@@ -189,13 +210,13 @@ export const techSkills = {
       "gRPC": "了解RPC框架、Protocol Buffers、服务治理",
     }
   },
-  "中间件": {
-    items: ["Kafka", "Canal", "Elasticsearch", "WebSocket"],
+  "消息队列 & 中间件": {
+    items: ["Kafka", "Canal", "WebSocket", "Protobuf"],
     details: {
-      "Kafka": "高吞吐消息队列实践，消费者组管理、消息可靠性保障",
+      "Kafka": "高吞吐消息队列实践，消费者组管理、消息可靠性保障、Sticky+StaticMember策略",
       "Canal": "MySQL binlog解析、数据同步、缓存一致性保障",
-      "Elasticsearch": "全文检索、聚合查询、索引设计、性能优化",
       "WebSocket": "实时通信、流式输出、长连接管理",
+      "Protobuf": "高效序列化、配合LZ4压缩降低网络开销",
     }
   },
   "设计模式": {
