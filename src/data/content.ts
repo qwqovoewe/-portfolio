@@ -38,8 +38,8 @@ export const profile = {
   // ========== 个人简介 ==========
   bio: [
     "你好！我是王睿轩，华中农业大学计算机科学与技术专业本科生，曾在小红书担任后端开发实习生。",
-    "我专注于高并发架构设计与性能优化。在实习期间，我主导了慢SQL治理和全量SQL分析系统的设计与落地，通过多轮优化将系统性能提升 2-3 倍，支撑日均百万级数据处理。",
-    "技术栈方面，我熟练掌握 Java、MySQL、Redis、Kafka 等后端技术，有丰富的大规模系统设计与落地经验。同时也在学习 Go 语言和 Agent 相关开发技术。",
+    "我专注于高并发架构设计与性能优化。在实习期间，我主导了慢SQL治理、全量SQL分析系统和出海链路DTS冲突告警的设计与落地，通过多轮优化将系统性能提升数倍，支撑日均百万级数据处理。",
+    "技术栈方面，我熟练掌握 Java、MySQL、Redis、Kafka 等后端技术，有大规模系统设计与落地经验。同时基于 LangChain/ReAct 构建了 Redis 告警根因定位 Agent 系统，累计完成 300+ 根因定位，熟悉 AI 工程化开发。",
     "工作之余，我担任沸点工作室总负责人，负责技术人才培养和项目对接，享受分享技术知识和帮助他人成长的过程。"
   ],
 
@@ -72,7 +72,7 @@ export const projects = [
     name: "慢SQL治理平台",
     type: "实习项目",
     company: "小红书 · 关系型数据库平台研发组",
-    period: "2025.09 - 2026.03",
+    period: "2025.09 - 2025.11",
     role: "项目主导",
     description: "设计聚合+告警+持久化流水线，聚合耗时下降60%，并发QPS提升2.1倍，覆盖900+集群。",
     // 截图放 public/screenshots/slow-sql/ 目录下，按命名规范添加到下方数组
@@ -83,6 +83,7 @@ export const projects = [
       "Kafka消费一致性：采用Hash分片与Sticky+StaticMember消费策略，保障多Pod场景下聚合一致性，降低数据抖动与重复告警",
       "平台能力闭环：实现动态通知、静默、白名单、自定义配置、跳转详情，集成索引推荐与根因定位",
       "整体规模：Binlog采集链路覆盖900+集群，Kafka写入流量100+MB/s，单实例峰值7K+ Event QPS",
+      "存储云平台：实现工单审批接入IM平台，通过二次路由转发解决多泳道回调寻址，稳定支撑日均8k PV审批链路",
     ],
     techStack: ["Java", "Kafka", "ClickHouse", "Redis", "Spring Boot"],
   },
@@ -92,7 +93,7 @@ export const projects = [
     name: "全量SQL分析系统",
     type: "实习项目",
     company: "小红书 · 关系型数据库平台研发组",
-    period: "2025.10 - 2026.02",
+    period: "2025.10 - 2025.12",
     role: "负责人",
     description: "Binlog实时采集与持久化，单Pod吞吐提升2倍，峰值7K+ Event QPS，端到端延迟<1min。",
     overview: "负责Binlog SQL实时采集与持久化，提供TOP SQL定位、表级流量分析等能力，实现SQL写入可观测。",
@@ -103,6 +104,43 @@ export const projects = [
       "异步聚合+核查：降低数据噪声1/3+，增量/日报双轨告警接入IM触达到人，增量收口效率显著提升",
     ],
     techStack: ["Java", "Kafka", "Protobuf", "LZ4", "ClickHouse"],
+    screenshots: [] as { src: string; caption: string }[],
+  },
+  {
+    slug: "redis-agent",
+    name: "Redis/RedKV 告警根因定位Agent",
+    type: "实习项目",
+    company: "小红书 · 关系型数据库平台研发组",
+    period: "2026.01 - 2026.03",
+    role: "负责人",
+    description: "ReAct模式Agent根因定位系统，覆盖5类告警场景，累计300+定位，平均耗时提升约8倍。",
+    overview: "将原有Pipeline串行架构重构为ReAct模式的Agent根因定位系统，实现从告警触发到根因输出的全自动闭环。",
+    highlights: [
+      "设计ReAct模式Agent，基于Tool Calling实现多轮自主推导与工具调度，覆盖Redis/RedKV共5类告警场景",
+      "设计基线-当前对比压缩算法，采集指标从千级数据点压缩至百级token，信息密度提升约10倍",
+      "将SOP编码为结构化提示词，设计分层过滤与R值判定，实现大key/hotkey等7类根因量化判定",
+      "设计Tool/Collector/DataSource三层采集架构，Step/Turn/Message三级持久化，支持诊断全链路观测",
+      "累计完成300+根因定位，新版平均耗时48.6s（提升约8倍），DBA反馈准确性显著提升",
+    ],
+    techStack: ["Python", "LangChain", "ReAct Agent", "Prometheus", "PQL"],
+    screenshots: [] as { src: string; caption: string }[],
+  },
+  {
+    slug: "dts-conflict",
+    name: "出海链路DTS冲突告警",
+    type: "实习项目",
+    company: "小红书 · 关系型数据库平台研发组",
+    period: "2025.12 - 2026.03",
+    role: "负责人",
+    description: "DTS同步数据冲突实时观测与告警，三层线程池支撑百万级数据聚合核查，增量收口效率提升50%+。",
+    overview: "负责小红书出海链路DTS同步数据冲突告警，实时观测与告警，辅助业务纠偏，保障出海链路的稳定性与安全性。",
+    highlights: [
+      "三层线程池并发，支撑百万级数据聚合/核查（聚合1.68w条/2.9s，核查58条/s），保障小时级告警/存量清洗时效",
+      "主键分段+滑动窗口解决OOM问题，连接池缓存复用+容量调优保障7×24小时稳定运行",
+      "异步聚合+核查降低数据曝光1/3+，增量/日报双轨告警接入IM触达到人",
+      "提供差异详情数据与修复SQL导出，增量收口效率提升50%+",
+    ],
+    techStack: ["Java", "Kafka", "MySQL", "IM"],
     screenshots: [] as { src: string; caption: string }[],
   },
   {
@@ -161,8 +199,14 @@ export const milestones = [
   {
     date: "2024.03",
     icon: "🔥",
-    title: "担任沸点工作室总负责人",
-    description: "负责技术人才培养、项目对接与团队管理。",
+    title: "加入沸点工作室",
+    description: "加入校级技术组织沸点工作室，开始系统学习后端技术栈。",
+  },
+  {
+    date: "2024.09",
+    icon: "⭐",
+    title: "完成转正答辩，担任沸点工作室总负责人",
+    description: "负责团队管理、学习路线制定、项目需求对接与交付统筹、招新面试等日常事务。",
   },
   {
     date: "2024.10",
@@ -183,10 +227,16 @@ export const milestones = [
     description: "加入关系型数据库平台研发组，参与数据自治系统采集等核心基础设施建设，DTS告警，openClaw的skills开发等工作。",
   },
   {
+    date: "2026.01",
+    icon: "🤖",
+    title: "Redis Agent 根因定位系统",
+    description: "基于LangChain/ReAct构建告警根因定位Agent，覆盖5类告警场景，累计300+定位，耗时提升约8倍。",
+  },
+  {
     date: "2026.03",
     icon: "✨",
     title: "实习成果总结",
-    description: "主导慢SQL治理二期与全量SQL分析，支撑日均百万级数据处理。dts1.0与2.0冲突告警与复查链路落地。",
+    description: "主导慢SQL治理二期与全量SQL分析，支撑日均百万级数据处理。dts1.0与2.0冲突告警与复查链路落地。构建Redis告警根因定位Agent，累计300+定位。",
   },
   {
     date: "2026.04",
@@ -202,6 +252,15 @@ export const milestones = [
 // ============================================
 
 export const techSkills = {
+  "AI工程化": {
+    items: ["LangChain/ReAct", "Agent Skills", "Claude Code", "Copilot"],
+    details: {
+      "LangChain/ReAct": "基于LangChain构建ReAct模式Agent系统，Tool Calling多轮自主推导与工具调度",
+      "Agent Skills": "熟悉MCP Server与Agent Skills开发，设计Tool/Collector/DataSource三层采集架构",
+      "Claude Code": "熟练使用Claude Code辅助开发，基于OpenClaw构建个人开发工作流",
+      "Copilot": "日常开发中使用AI辅助编程，提升开发效率",
+    }
+  },
   "编程语言": {
     items: ["Java基础", "JVM调优", "JUC并发", "Go pprof"],
     details: {
