@@ -122,7 +122,7 @@ class Neko {
   async createNekoElement() {
     this.nekoElement = document.createElement("div");
     this.nekoElement.id = "oneko";
-    this.nekoElement.ariaHidden = "true";
+    this.nekoElement.setAttribute('aria-hidden', 'true');
     
     // Calculate scale factor
     const scale = NEKO_WIDTH / SPRITE_SIZE;

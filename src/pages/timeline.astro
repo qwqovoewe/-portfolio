@@ -1,32 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const milestones = [
-  {
-    date: '2024.09',
-    title: '踏入编程世界',
-    description: '开始学习 HTML、CSS 和 JavaScript，完成了第一个静态网页项目。对前端开发产生浓厚兴趣。',
-    icon: '🌱',
-  },
-  {
-    date: '2025.03',
-    title: '深入前端框架',
-    description: '系统学习 React 和 Vue.js，掌握组件化开发思想。开始参与开源社区，提交第一个 PR。',
-    icon: '⚡',
-  },
-  {
-    date: '2025.09',
-    title: '全栈开发探索',
-    description: '学习 Node.js 和数据库技术，完成多个全栈项目。开始关注系统设计和性能优化。',
-    icon: '🚀',
-  },
-  {
-    date: '2026.03',
-    title: '持续精进',
-    description: '深入 TypeScript 和现代工具链，探索 AI 辅助开发。构建个人作品集，持续输出技术博客。',
-    icon: '✨',
-  },
-];
+import { milestones } from '../data/content';
 ---
 
 <Layout title="时间线 | Portfolio" currentPage="timeline">

@@ -3,13 +3,14 @@ interface Props {
   title: string;
   description?: string;
   currentPage?: string;
+  robots?: string;
 }
 
 import Oneko from '../components/Oneko.astro';
 import RippleText from '../components/RippleText.astro';
 import { navItems, profile } from '../data/content';
 
-const { title, description, currentPage = 'home' } = Astro.props;
+const { title, description, currentPage = 'home', robots = 'index, follow' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
 // 判断是否在主页
@@ -19,7 +20,7 @@ const defaultDescription = '王睿轩 - 后端工程师 | 华中农业大学 | �
 const pageDescription = description || defaultDescription;
 const pageTitle = title;
 const siteOrigin = 'https://qwqovoewe.github.io';
-const canonicalUrl = Astro.url ? `${siteOrigin}${Astro.url.pathname}` : `${siteOrigin}/-portfolio/`;
+const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
 ---
 
 <!doctype html>
@@ -35,7 +36,7 @@ const canonicalUrl = Astro.url ? `${siteOrigin}${Astro.url.pathname}` : `${siteO
     <meta name="description" content={pageDescription}>
     <meta name="keywords" content="王睿轩,后端开发,Java,高并发,Redis,Kafka,简历,Portfolio,华中农业大学">
     <meta name="author" content="王睿轩">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content={robots}>
     <link rel="canonical" href={canonicalUrl}>
 
     <!-- Open Graph / Social Media -->
@@ -99,11 +100,11 @@ const canonicalUrl = Astro.url ? `${siteOrigin}${Astro.url.pathname}` : `${siteO
             title="切换主题"
           >
             <!-- 月亮图标 - 深色主题显示 -->
-            <svg class="w-5 h-5 theme-icon-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 theme-icon-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
             <!-- 太阳图标 - 亮色主题显示 -->
-            <svg class="w-5 h-5 theme-icon-light hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 theme-icon-light hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
           </button>
@@ -168,7 +169,7 @@ const canonicalUrl = Astro.url ? `${siteOrigin}${Astro.url.pathname}` : `${siteO
   updateScrollProgress();
 
   // Section dots navigation
-  const sections = ['hero', 'projects', 'timeline', 'about'];
+  const sections = ['hero', 'projects', 'timeline', 'articles', 'about'];
   const dots = document.querySelectorAll('.section-dot');
   const isHomePage = (window as any).IS_HOME_PAGE !== false;
   

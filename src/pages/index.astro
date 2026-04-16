@@ -176,7 +176,7 @@ const projectsData = projects.map(p => ({
                 <div class="atropos-rotate">
                   <div class="atropos-inner" style="overflow: visible;">
                     <a
-                      href={article.url}
+                      href={article.url.startsWith('http') ? article.url : `${import.meta.env.BASE_URL}${article.url}`}
                       {...(article.url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       class="group flex gap-5 p-5 rounded-xl border border-border bg-surface hover:border-accent/30 hover:bg-surface-hover transition-all"
                     >
@@ -234,7 +234,7 @@ const projectsData = projects.map(p => ({
       <div class="space-y-12">
         <div class="section-animate rounded-xl border border-border bg-surface p-8 space-y-4">
           {profile.bio.map((text, i) => (
-            <p class={i === 0 ? 'text-lg text-zinc-200' : 'text-zinc-500 leading-relaxed'}>{text}</p>
+            <p class={i === 0 ? 'text-lg text-text' : 'text-text-muted leading-relaxed'}>{text}</p>
           ))}
         </div>
 
@@ -429,7 +429,6 @@ const projectsData = projects.map(p => ({
     transform: translateX(0) !important;
   }
   
-  html { scroll-behavior: smooth; }
   
   /* 背景渐变流动效果 */
   body::before {

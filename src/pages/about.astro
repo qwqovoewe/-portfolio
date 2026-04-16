@@ -60,7 +60,7 @@ const base = import.meta.env.BASE_URL;
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {profile.awards.map((award) => (
             <div class="flex items-center gap-3 p-4 rounded-xl border border-border bg-surface">
-              <span class="text-2xl">🏆</span>
+              <span class="text-2xl">{award.icon}</span>
               <div>
                 <p class="font-medium">{award.name}</p>
                 <p class="text-sm text-text-muted">{award.level}</p>
