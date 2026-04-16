@@ -13,8 +13,8 @@ declare global {
   }
 }
 
-window.NEKO_POSITION = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-window.MOUSE_POSITION = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+window.NEKO_POSITION = { x: -9999, y: -9999 };
+window.MOUSE_POSITION = { x: -9999, y: -9999 };
 
 // 追踪鼠标位置
 document.addEventListener('mousemove', (e) => {
@@ -63,10 +63,21 @@ class FormParticle {
     this.y = targetY + Math.sin(angle) * dist;
   }
 
-  update() {
-    // 线性插值，平滑趋近目标，无震荡
+  update(mouseX: number, mouseY: number) {
+    // 线性插值趋近目标
     this.x += (this.targetX - this.x) * 0.05;
     this.y += (this.targetY - this.y) * 0.05;
+
+    // 鼠标排斥（搅动效果）
+    const dx = this.x - mouseX;
+    const dy = this.y - mouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 100 && dist > 0) {
+      const f = (100 - dist) / 100;
+      const a = Math.atan2(dy, dx);
+      this.x += Math.cos(a) * f * 8;
+      this.y += Math.sin(a) * f * 8;
+    }
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -261,10 +272,128 @@ function sampleTextPixels(text: string, fontSize: number, centerX: number, cente
   return particles;
 }
 
+// ============ 像素采样（仅坐标） ============
+function sampleTargets(text: string, fontSize: number, centerX: number, centerY: number, step: number): {x: number, y: number, a: number}[] {
+  const offscreen = document.createElement('canvas');
+  const offCtx = offscreen.getContext('2d')!;
+
+  offCtx.font = `bold ${fontSize}px "Inter", system-ui, sans-serif`;
+  const metrics = offCtx.measureText(text);
+  const textWidth = metrics.width;
+  const textHeight = fontSize * 1.2;
+
+  const pad = 10;
+  offscreen.width = Math.ceil(textWidth) + pad * 2;
+  offscreen.height = Math.ceil(textHeight) + pad * 2;
+
+  offCtx.font = `bold ${fontSize}px "Inter", system-ui, sans-serif`;
+  offCtx.fillStyle = '#ffffff';
+  offCtx.textBaseline = 'top';
+  offCtx.fillText(text, pad, pad + (textHeight - fontSize) / 2);
+
+  const imageData = offCtx.getImageData(0, 0, offscreen.width, offscreen.height);
+  const data = imageData.data;
+  const targets: {x: number, y: number, a: number}[] = [];
+
+  const offsetX = centerX - textWidth / 2;
+  const offsetY = centerY - textHeight / 2;
+
+  for (let y = 0; y < offscreen.height; y += step) {
+    for (let x = 0; x < offscreen.width; x += step) {
+      const i = (y * offscreen.width + x) * 4;
+      const alpha = data[i + 3];
+      if (alpha > 50) {
+        targets.push({
+          x: offsetX + x - pad,
+          y: offsetY + y - pad,
+          a: 0.6 + (alpha / 255) * 0.4,
+        });
+      }
+    }
+  }
+  return targets;
+}
+
+// ============ Morph 粒子 ============
+class MorphParticle {
+  x: number;
+  y: number;
+  radius: number;
+  alpha: number;
+  allTargets: {x: number, y: number, a: number}[]; // 当前 from 目标在 index 0，其他依次排列
+  fromX: number;
+  fromY: number;
+  fromA: number;
+
+  constructor(target: {x: number, y: number, a: number}) {
+    this.x = target.x;
+    this.y = target.y;
+    this.alpha = target.a;
+    this.radius = 1.0 + Math.random() * 0.8;
+    this.allTargets = [];
+    this.fromX = target.x;
+    this.fromY = target.y;
+    this.fromA = target.a;
+  }
+
+  update(toIdx: number, progress: number, mouseX: number, mouseY: number) {
+    const to = this.allTargets[toIdx];
+    if (!to) return;
+
+    // smoothstep 插值
+    const t = progress < 1 ? progress * progress * (3 - 2 * progress) : 1;
+    this.x = this.fromX + (to.x - this.fromX) * t;
+    this.y = this.fromY + (to.y - this.fromY) * t;
+    this.alpha = this.fromA + (to.a - this.fromA) * t;
+
+    // 鼠标排斥
+    const dx = this.x - mouseX;
+    const dy = this.y - mouseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 100 && dist > 0) {
+      const f = (100 - dist) / 100;
+      const a = Math.atan2(dy, dx);
+      this.x += Math.cos(a) * f * 8;
+      this.y += Math.sin(a) * f * 8;
+    }
+  }
+
+  snapTo(idx: number) {
+    const t = this.allTargets[idx];
+    if (!t) return;
+    this.fromX = t.x;
+    this.fromY = t.y;
+    this.fromA = t.a;
+    this.x = t.x;
+    this.y = t.y;
+    this.alpha = t.a;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    if (this.alpha < 0.01) return;
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
 // ============ 粒子数组 ============
 let formParticles: FormParticle[] = [];
 const dotParticles: DotParticle[] = [];
 const textParticles: TextParticle[] = [];
+let morphParticles: MorphParticle[] = [];
+
+// ============ Morph 状态 ============
+const morphTexts = ['Java Developer', 'Backend Engineer', 'AI Explorer'];
+const MORPH_HOLD = 1500;      // 停留 1.5s
+const MORPH_TRANSITION = 1500; // 过渡 1.5s
+const MORPH_CYCLE = MORPH_HOLD + MORPH_TRANSITION;
+let morphCurrentIdx = 0;
+let morphStartTime = 0;
+let morphActive = false;
+let morphLastCycle = -1; // 上一个周期编号
+
 const phrases = [
   'JVM', 'AQS', 'CAS', 'MVCC', 'Binlog', 'NIO', 'pprof', 'LZ4', 'gRPC',
   'LLM', 'RAG', 'Embedding', 'Prompt', 'Transformer', 'Token', 'Fine-tune', 'Vector', 'Attention', 'RLHF',
@@ -408,6 +537,32 @@ function initParticles() {
     animPhase = PHASE_ASSEMBLE;
     heroRevealed = false;
   }
+
+  // Morph 粒子初始化（采样所有文字）
+  const morphFontSize = width < 768 ? 22 : 32;
+  const morphCenterX = width / 2;
+  const morphCenterY = 64 + morphFontSize + 20; // 导航栏(64px)下方居中
+  const step = 2;
+
+  const allTargets = morphTexts.map(t => sampleTargets(t, morphFontSize, morphCenterX, morphCenterY, step));
+  const maxCount = Math.max(...allTargets.map(t => t.length));
+
+  // 填充不足的文字目标（淡出到中心，alpha=0）
+  for (const targets of allTargets) {
+    while (targets.length < maxCount) {
+      targets.push({ x: morphCenterX, y: morphCenterY, a: 0 });
+    }
+  }
+
+  morphParticles = [];
+  for (let i = 0; i < maxCount; i++) {
+    const p = new MorphParticle(allTargets[0][i]);
+    p.allTargets = allTargets.map(t => t[i]);
+    morphParticles.push(p);
+  }
+  morphCurrentIdx = 0;
+  morphStartTime = performance.now();
+  morphActive = false;
 }
 
 function animate() {
@@ -430,6 +585,13 @@ function animate() {
   if (animPhase === PHASE_DISSOLVE && elapsed >= ASSEMBLE_DURATION + DISSOLVE_DURATION) {
     animPhase = PHASE_DONE;
     formParticles.length = 0; // 释放内存
+    // 启动 Morph 动画
+    if (!morphActive) {
+      morphActive = true;
+      morphStartTime = now;
+      morphCurrentIdx = 0;
+      morphLastCycle = 0;
+    }
   }
 
   // ---- 绘制代码雨 ----
@@ -460,8 +622,40 @@ function animate() {
       }
     }
     for (const p of formParticles) {
-      p.update();
+      p.update(mousePos.x, mousePos.y);
       p.draw(ctx);
+    }
+  }
+
+  // ---- 绘制 Morph 粒子 ----
+  if (morphActive && morphParticles.length > 0) {
+    ctx.fillStyle = '#818cf8';
+    const morphElapsed = now - morphStartTime;
+
+    // 先检测是否需要切换到下一段
+    const currCycle = Math.floor(morphElapsed / MORPH_CYCLE);
+    if (currCycle > morphLastCycle && morphLastCycle >= 0) {
+      morphCurrentIdx = (morphCurrentIdx + 1) % morphTexts.length;
+      for (const p of morphParticles) {
+        p.snapTo(morphCurrentIdx);
+      }
+    }
+    morphLastCycle = currCycle;
+
+    const cycleTime = morphElapsed % MORPH_CYCLE;
+    const nextIdx = (morphCurrentIdx + 1) % morphTexts.length;
+
+    if (cycleTime < MORPH_HOLD) {
+      for (const p of morphParticles) {
+        p.update(morphCurrentIdx, 1, mousePos.x, mousePos.y);
+        p.draw(ctx);
+      }
+    } else {
+      const progress = (cycleTime - MORPH_HOLD) / MORPH_TRANSITION;
+      for (const p of morphParticles) {
+        p.update(nextIdx, progress, mousePos.x, mousePos.y);
+        p.draw(ctx);
+      }
     }
   }
 
