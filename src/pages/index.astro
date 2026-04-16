@@ -34,19 +34,19 @@ const projectsData = projects.map(p => ({
   <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
     <div id="hero-overlay" class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg pointer-events-none"></div>
     
-    <div class="relative z-10 text-center px-6 hero-content">
+    <div class="relative z-10 text-center px-6 hero-content" style="opacity: 0; transition: opacity 1s ease-out;">
       <div class="atropos hero-atropos" style="max-width: 56rem; margin: 0 auto;">
         <div class="atropos-scale">
           <div class="atropos-rotate">
             <div class="atropos-inner" style="overflow: visible; padding: 3rem 1rem;">
-              <p class="text-text-muted text-sm tracking-widest uppercase mb-4 animate-fade-in-up" data-atropos-offset="1">Welcome</p>
-              <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 animate-fade-in-up animation-delay-100" data-atropos-offset="8">
+              <p class="text-text-muted text-sm tracking-widest uppercase mb-4" data-atropos-offset="1">Welcome</p>
+              <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6" data-atropos-offset="8">
                 Hi, I'm <span class="text-accent">{profile.nameEn}</span>
               </h1>
-              <p class="text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-4 animate-fade-in-up animation-delay-200" data-atropos-offset="3">
+              <p class="text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-4" data-atropos-offset="3">
                 {profile.title}
               </p>
-              <div class="flex items-center justify-center gap-4 animate-fade-in-up animation-delay-300" data-atropos-offset="5">
+              <div class="flex items-center justify-center gap-4" data-atropos-offset="5">
                 <a href="#projects" class="nav-link px-6 py-2.5 bg-accent text-white rounded-lg text-sm font-medium transition-all duration-200 ease-out hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/25 hover:-translate-y-0.5 active:translate-y-0">查看作品</a>
                 <a href="#about" class="nav-link px-6 py-2.5 border border-border rounded-lg text-sm font-medium transition-all duration-200 ease-out text-text-muted hover:text-text hover:border-accent/50 hover:bg-surface-hover hover:-translate-y-0.5 active:translate-y-0">了解更多</a>
               </div>
@@ -615,6 +615,14 @@ const projectsData = projects.map(p => ({
       highlight: false,
     });
   }
+
+  // 粒子入场动画结束后淡入 Hero 文字
+  window.addEventListener('hero-text-reveal', () => {
+    const hero = document.querySelector('.hero-content') as HTMLElement | null;
+    if (hero) {
+      hero.style.opacity = '1';
+    }
+  });
   // ────────────────────────────────────────────────────────────
 
   // 光标跟随光晕效果
