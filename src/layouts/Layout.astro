@@ -81,7 +81,8 @@ const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
       <div class="mx-auto max-w-5xl flex items-center justify-between px-6 h-16">
         <a href={`${base}`} class="text-lg font-bold tracking-tight text-accent">{profile.nameEn.split(' ')[0]}</a>
         <div class="flex items-center gap-2">
-          <ul class="flex items-center gap-1">
+          <!-- Desktop nav -->
+          <ul class="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <li>
                 <a
@@ -99,16 +100,43 @@ const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
             class="p-2 rounded-lg hover:bg-surface-hover transition-all duration-200 text-text-muted hover:text-text"
             title="切换主题"
           >
-            <!-- 月亮图标 - 深色主题显示 -->
             <svg class="w-5 h-5 theme-icon-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
-            <!-- 太阳图标 - 亮色主题显示 -->
             <svg class="w-5 h-5 theme-icon-light hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
           </button>
+          <!-- Mobile hamburger -->
+          <button
+            id="mobile-menu-toggle"
+            class="md:hidden p-2 rounded-lg hover:bg-surface-hover transition-all duration-200 text-text-muted hover:text-text"
+            title="菜单"
+            aria-label="打开菜单"
+          >
+            <svg class="w-5 h-5 hamburger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+            <svg class="w-5 h-5 close-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
+      </div>
+      <!-- Mobile dropdown menu -->
+      <div id="mobile-menu" class="md:hidden hidden border-t border-border/50 bg-bg/95 backdrop-blur-xl">
+        <ul class="px-6 py-3 space-y-1">
+          {navItems.map((item) => (
+            <li>
+              <a
+                href={isHomePage ? item.href : `${base}${item.href}`}
+                class="mobile-nav-link nav-link block px-3 py-2.5 rounded-lg text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
+              >
+                {item.name}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </nav>
 
@@ -151,6 +179,28 @@ const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
       darkIcon?.classList.add('hidden');
       lightIcon?.classList.remove('hidden');
     }
+  });
+
+  // Mobile menu toggle
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const hamburgerIcon = document.querySelector('.hamburger-icon');
+  const closeIcon = document.querySelector('.close-icon');
+
+  mobileMenuToggle?.addEventListener('click', () => {
+    const isOpen = !mobileMenu?.classList.contains('hidden');
+    mobileMenu?.classList.toggle('hidden');
+    hamburgerIcon?.classList.toggle('hidden');
+    closeIcon?.classList.toggle('hidden');
+    mobileMenuToggle.setAttribute('aria-label', isOpen ? '打开菜单' : '关闭菜单');
+  });
+
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu?.classList.add('hidden');
+      hamburgerIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+    });
   });
 
   // Scroll progress bar
