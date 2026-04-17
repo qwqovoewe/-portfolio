@@ -44,12 +44,14 @@ const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
     <meta property="og:url" content={canonicalUrl}>
     <meta property="og:title" content={pageTitle}>
     <meta property="og:description" content={pageDescription}>
+    <meta property="og:image" content={`${siteOrigin}${base}/og-default.png`}>
     <meta property="og:locale" content="zh_CN">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content={pageTitle}>
     <meta name="twitter:description" content={pageDescription}>
+    <meta name="twitter:image" content={`${siteOrigin}${base}/og-default.png`}>
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#818cf8">
