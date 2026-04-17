@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://qwqovoewe.github.io/-portfolio/sitemap-index.xml

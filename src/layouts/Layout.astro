@@ -28,6 +28,7 @@ const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="icon" type="image/x-icon" href={`${base}/favicon.ico`} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
@@ -88,7 +89,7 @@ const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
             {navItems.map((item) => (
               <li>
                 <a
-                  href={isHomePage ? item.href : `${base}${item.href}`}
+                  href={isHomePage ? item.href : `${base}/${item.href}`}
                   class="nav-link px-3 py-1.5 rounded-md text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
                 >
                   {item.name}
@@ -131,7 +132,7 @@ const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
           {navItems.map((item) => (
             <li>
               <a
-                href={isHomePage ? item.href : `${base}${item.href}`}
+                href={isHomePage ? item.href : `${base}/${item.href}`}
                 class="mobile-nav-link nav-link block px-3 py-2.5 rounded-lg text-sm text-text-muted hover:text-text hover:bg-surface-hover transition-all duration-200"
               >
                 {item.name}
@@ -266,7 +267,7 @@ const canonicalUrl = `${siteOrigin}${Astro.url.pathname}`;
       } else {
         // 在其他页面，跳转到主页对应位置
         const baseUrl = (window as any).BASE_URL || '/';
-        window.location.href = baseUrl + (sectionId ? `#${sectionId}` : '');
+        window.location.href = baseUrl + '/' + (sectionId ? `#${sectionId}` : '');
       }
     });
   });

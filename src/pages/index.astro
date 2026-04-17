@@ -755,7 +755,7 @@ const projectsData = projects.map(p => ({
           hint.style.opacity = '';
         }, 1500);
       } catch (err) {
-        console.error('Failed to copy:', err);
+        // silent fail — UI hint handles feedback
       }
     });
   });
