@@ -39,3 +39,39 @@
 基于 **Astro 6** + **Tailwind CSS 4** 构建的纯静态站点，通过 GitHub Actions 自动部署到 GitHub Pages。
 
 本站是基于 OpenClaw 调用 Claude Code 纯 vibe coding 出来的产物 — 从页面结构到交互动画，全程由 AI 辅助完成。
+
+---
+
+## 本地开发
+
+### 环境要求
+
+- Node.js `22.12.0`
+- npm `10+`
+
+仓库根目录提供了 `.nvmrc` 和 `.node-version`，本地开发与 GitHub Actions 使用同一 Node 版本。
+`.npmrc` 已开启 `engine-strict=true`，如果 Node 版本不符合要求，`npm install` 会直接失败而不是仅给 warning。
+
+### 快速开始
+
+如果你使用 `nvm`：
+
+```bash
+nvm use
+npm install
+npm run dev
+```
+
+如果你没有 `nvm`，请先手动切到 Node `22.12.0`，再执行：
+
+```bash
+npm install
+npm run dev
+```
+
+### 构建预览
+
+```bash
+npm run build
+npm run preview
+```
